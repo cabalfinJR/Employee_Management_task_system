@@ -75,7 +75,8 @@
     addDoc,
     onSnapshot,
     doc,
-    updateDoc
+    updateDoc,
+    deleteDoc
   } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
   const auth = getAuth(app);
@@ -112,9 +113,11 @@
 
             ${
               task.status === "Pending"
-                ? `<button class="btn btn-sm btn-success" onclick="markCompleted('${taskId}')">Mark Completed</button>`
-                : `<button class="btn btn-sm btn-secondary" onclick="markPending('${taskId}')">Mark Pending</button>`
+                ? `<button class="btn btn-sm btn-success me-2" onclick="markCompleted('${taskId}')">Mark Completed</button>`
+                : `<button class="btn btn-sm btn-secondary me-2" onclick="markPending('${taskId}')">Mark Pending</button>`
             }
+
+            <button class="btn btn-sm btn-danger" onclick="deleteTask('${taskId}')">Delete</button>
           </div>
         `;
       });
@@ -170,6 +173,14 @@
     await updateDoc(doc(db, "tasks", taskId), {
       status: "Pending"
     });
+  };
+
+  window.deleteTask = async function (taskId) {
+    const confirmDelete = confirm("Are you sure you want to delete this task?");
+
+    if (confirmDelete) {
+      await deleteDoc(doc(db, "tasks", taskId));
+    }
   };
 
   window.logout = function () {
