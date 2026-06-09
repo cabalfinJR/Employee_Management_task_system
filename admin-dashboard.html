@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin Dashboard</title>
+</head>
+<body>
+  <h1>Admin Dashboard</h1>
+
+  <h2>Tasks</h2>
+  <div id="taskList">Loading tasks...</div>
+
+  <br>
+  <button onclick="logout()">Logout</button>
+
+  <script type="module">
+    import { app } from "./firebase-config.js";
+    import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    async function loadTasks() {
+      const taskList = document.getElementById("taskList");
+      taskList.innerHTML = "";
+
+      const querySnapshot = await getDocs(collection(db, "tasks"));
+
+      querySnapshot.forEach((doc) => {
+        const task = doc.data();
+
+        taskList.innerHTML += `
+          <div style="border:1px solid #ccc; padding:10px; margin:10px;">
+            <h3>${task.title}</h3>
+            <p>${task.description}</p>
+            <p>Status: ${task.status}</p>
+            <p>Assigned to: ${task.assignedTo}</p>
+          </div>
+        `;
+      });
+    }
+
+    window.logout = function () {
+      signOut(auth).then(() => {
+        window.location.href = "login.html";
+      });
+    };
+
+    loadTasks();
+  </script>
+</body>
+</html>
