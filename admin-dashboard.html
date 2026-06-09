@@ -72,28 +72,24 @@
   import {
     getFirestore,
     collection,
-    getDocs,
-    addDoc
+    addDoc,
+    onSnapshot
   } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
   const auth = getAuth(app);
   const db = getFirestore(app);
 
-  async function loadTasks() {
+  function loadTasks() {
     const taskList = document.getElementById("taskList");
     const totalTasks = document.getElementById("totalTasks");
     const pendingTasks = document.getElementById("pendingTasks");
     const completedTasks = document.getElementById("completedTasks");
 
-    taskList.innerHTML = "Loading tasks...";
-
-    let total = 0;
-    let pending = 0;
-    let completed = 0;
-    let html = "";
-
-    try {
-      const querySnapshot = await getDocs(collection(db, "tasks"));
+    onSnapshot(collection(db, "tasks"), (querySnapshot) => {
+      let total = 0;
+      let pending = 0;
+      let completed = 0;
+      let html = "";
 
       querySnapshot.forEach((doc) => {
         const task = doc.data();
@@ -117,10 +113,7 @@
       completedTasks.innerText = completed;
 
       taskList.innerHTML = total === 0 ? "No tasks found." : html;
-
-    } catch (error) {
-      taskList.innerHTML = `<p class="text-danger">${error.message}</p>`;
-    }
+    });
   }
 
   window.addTask = async function () {
@@ -149,8 +142,6 @@
       document.getElementById("title").value = "";
       document.getElementById("description").value = "";
       document.getElementById("assignedTo").value = "";
-
-      await loadTasks();
 
     } catch (error) {
       message.innerText = error.message;
