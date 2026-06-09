@@ -18,6 +18,19 @@
     <h2>Admin Dashboard</h2>
     <p class="text-muted">Welcome, Administrator</p>
 
+    <div class="card shadow-sm mt-4">
+      <div class="card-header bg-primary text-white">
+        Add New Task
+      </div>
+      <div class="card-body">
+        <input type="text" id="title" class="form-control mb-2" placeholder="Task Title">
+        <textarea id="description" class="form-control mb-2" placeholder="Task Description"></textarea>
+        <input type="text" id="assignedTo" class="form-control mb-2" placeholder="Assigned To">
+        <button onclick="addTask()" class="btn btn-success">Add Task</button>
+        <p id="message" class="mt-2"></p>
+      </div>
+    </div>
+
     <div class="row mt-4">
       <div class="col-md-4">
         <div class="card text-center shadow-sm">
@@ -60,7 +73,12 @@
   <script type="module">
     import { app } from "./firebase-config.js";
     import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import {
+      getFirestore,
+      collection,
+      getDocs,
+      addDoc
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
     const auth = getAuth(app);
     const db = getFirestore(app);
@@ -83,13 +101,8 @@
         const task = doc.data();
         total++;
 
-        if (task.status === "Pending") {
-          pending++;
-        }
-
-        if (task.status === "Completed") {
-          completed++;
-        }
+        if (task.status === "Pending") pending++;
+        if (task.status === "Completed") completed++;
 
         taskList.innerHTML += `
           <div class="border rounded p-3 mb-3">
@@ -109,6 +122,35 @@
         taskList.innerHTML = "No tasks found.";
       }
     }
+
+    window.addTask = async function () {
+      const title = document.getElementById("title").value;
+      const description = document.getElementById("description").value;
+      const assignedTo = document.getElementById("assignedTo").value;
+      const message = document.getElementById("message");
+
+      if (title === "" || description === "" || assignedTo === "") {
+        message.innerText = "Please fill in all fields.";
+        message.className = "text-danger mt-2";
+        return;
+      }
+
+      await addDoc(collection(db, "tasks"), {
+        title: title,
+        description: description,
+        assignedTo: assignedTo,
+        status: "Pending"
+      });
+
+      message.innerText = "Task added successfully!";
+      message.className = "text-success mt-2";
+
+      document.getElementById("title").value = "";
+      document.getElementById("description").value = "";
+      document.getElementById("assignedTo").value = "";
+
+      loadTasks();
+    };
 
     window.logout = function () {
       signOut(auth).then(() => {
