@@ -135,12 +135,27 @@
         return;
       }
 
-      await addDoc(collection(db, "tasks"), {
-        title: title,
-        description: description,
-        assignedTo: assignedTo,
-        status: "Pending"
-      });
+      try {
+  await addDoc(collection(db, "tasks"), {
+    title: title,
+    description: description,
+    assignedTo: assignedTo,
+    status: "Pending"
+  });
+
+  message.innerText = "Task added successfully!";
+  message.className = "text-success mt-2";
+
+  document.getElementById("title").value = "";
+  document.getElementById("description").value = "";
+  document.getElementById("assignedTo").value = "";
+
+  loadTasks();
+
+} catch (error) {
+  message.innerText = error.message;
+  message.className = "text-danger mt-2";
+}
 
       message.innerText = "Task added successfully!";
       message.className = "text-success mt-2";
