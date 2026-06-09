@@ -150,7 +150,7 @@
   document.getElementById("description").value = "";
   document.getElementById("assignedTo").value = "";
 
-  loadTasks();
+  await loadTasks();
 
 } catch (error) {
   message.innerText = error.message;
@@ -164,7 +164,7 @@
       document.getElementById("description").value = "";
       document.getElementById("assignedTo").value = "";
 
-      loadTasks();
+      await loadTasks();
     };
 
     window.logout = function () {
