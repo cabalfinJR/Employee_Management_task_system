@@ -58,7 +58,7 @@
     </div>
   </div>
 
-  <div class="card shadow-sm mt-4">
+  <div class="card shadow-sm mt-4 mb-5">
     <div class="card-header bg-dark text-white">Task List</div>
     <div class="card-body">
       <div id="taskList">Loading tasks...</div>
@@ -73,7 +73,9 @@
     getFirestore,
     collection,
     addDoc,
-    onSnapshot
+    onSnapshot,
+    doc,
+    updateDoc
   } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
   const auth = getAuth(app);
@@ -91,19 +93,28 @@
       let completed = 0;
       let html = "";
 
-      querySnapshot.forEach((doc) => {
-        const task = doc.data();
+      querySnapshot.forEach((taskDoc) => {
+        const task = taskDoc.data();
+        const taskId = taskDoc.id;
         total++;
 
         if (task.status === "Pending") pending++;
         if (task.status === "Completed") completed++;
 
+        const badgeClass = task.status === "Completed" ? "bg-success" : "bg-primary";
+
         html += `
           <div class="border rounded p-3 mb-3">
             <h5>${task.title}</h5>
             <p>${task.description}</p>
-            <span class="badge bg-primary">${task.status}</span>
-            <p class="mt-2 mb-0"><strong>Assigned to:</strong> ${task.assignedTo}</p>
+            <span class="badge ${badgeClass}">${task.status}</span>
+            <p class="mt-2 mb-2"><strong>Assigned to:</strong> ${task.assignedTo}</p>
+
+            ${
+              task.status === "Pending"
+                ? `<button class="btn btn-sm btn-success" onclick="markCompleted('${taskId}')">Mark Completed</button>`
+                : `<button class="btn btn-sm btn-secondary" onclick="markPending('${taskId}')">Mark Pending</button>`
+            }
           </div>
         `;
       });
@@ -147,6 +158,18 @@
       message.innerText = error.message;
       message.className = "text-danger mt-2";
     }
+  };
+
+  window.markCompleted = async function (taskId) {
+    await updateDoc(doc(db, "tasks", taskId), {
+      status: "Completed"
+    });
+  };
+
+  window.markPending = async function (taskId) {
+    await updateDoc(doc(db, "tasks", taskId), {
+      status: "Pending"
+    });
   };
 
   window.logout = function () {
