@@ -33,7 +33,9 @@
 
       <input type="text" id="title" class="form-control mb-2" placeholder="Task Title">
       <textarea id="description" class="form-control mb-2" placeholder="Task Description"></textarea>
-      <input type="text" id="assignedTo" class="form-control mb-2" placeholder="Assigned To">
+          <select id="assignedTo" class="form-control mb-2">
+              <option value="">Select Employee</option>
+          </select>
 
       <button onclick="addTask()" id="addBtn" class="btn btn-success">Add Task</button>
       <button onclick="saveEdit()" id="saveBtn" class="btn btn-warning d-none">Save Changes</button>
