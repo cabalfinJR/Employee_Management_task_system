@@ -111,8 +111,8 @@
 
     if (user.role === "employee") {
       assignedTo.innerHTML += `
-        <option value="${user.email}">
-          ${user.name} (${user.email})
+        <option value="${user.email}" data-name="${user.name}">
+        ${user.name} (${user.email})
         </option>
       `;
     }
