@@ -19,12 +19,18 @@
   <p class="text-muted">Welcome, Administrator</p>
 
   <div class="card shadow-sm mt-4">
-    <div class="card-header bg-primary text-white">Add New Task</div>
+    <div class="card-header bg-primary text-white" id="formTitle">Add New Task</div>
     <div class="card-body">
+      <input type="hidden" id="editTaskId">
+
       <input type="text" id="title" class="form-control mb-2" placeholder="Task Title">
       <textarea id="description" class="form-control mb-2" placeholder="Task Description"></textarea>
       <input type="text" id="assignedTo" class="form-control mb-2" placeholder="Assigned To">
-      <button onclick="addTask()" class="btn btn-success">Add Task</button>
+
+      <button onclick="addTask()" id="addBtn" class="btn btn-success">Add Task</button>
+      <button onclick="saveEdit()" id="saveBtn" class="btn btn-warning d-none">Save Changes</button>
+      <button onclick="cancelEdit()" id="cancelBtn" class="btn btn-secondary d-none">Cancel</button>
+
       <p id="message" class="mt-2"></p>
     </div>
   </div>
@@ -111,6 +117,11 @@
             <span class="badge ${badgeClass}">${task.status}</span>
             <p class="mt-2 mb-2"><strong>Assigned to:</strong> ${task.assignedTo}</p>
 
+            <button class="btn btn-sm btn-warning me-2"
+              onclick="editTask('${taskId}', '${task.title}', '${task.description}', '${task.assignedTo}')">
+              Edit
+            </button>
+
             ${
               task.status === "Pending"
                 ? `<button class="btn btn-sm btn-success me-2" onclick="markCompleted('${taskId}')">Mark Completed</button>`
@@ -142,26 +153,71 @@
       return;
     }
 
-    try {
-      await addDoc(collection(db, "tasks"), {
-        title: title,
-        description: description,
-        assignedTo: assignedTo,
-        status: "Pending"
-      });
+    await addDoc(collection(db, "tasks"), {
+      title,
+      description,
+      assignedTo,
+      status: "Pending"
+    });
 
-      message.innerText = "Task added successfully!";
-      message.className = "text-success mt-2";
-
-      document.getElementById("title").value = "";
-      document.getElementById("description").value = "";
-      document.getElementById("assignedTo").value = "";
-
-    } catch (error) {
-      message.innerText = error.message;
-      message.className = "text-danger mt-2";
-    }
+    message.innerText = "Task added successfully!";
+    message.className = "text-success mt-2";
+    clearForm();
   };
+
+  window.editTask = function (taskId, title, description, assignedTo) {
+    document.getElementById("editTaskId").value = taskId;
+    document.getElementById("title").value = title;
+    document.getElementById("description").value = description;
+    document.getElementById("assignedTo").value = assignedTo;
+
+    document.getElementById("formTitle").innerText = "Edit Task";
+    document.getElementById("addBtn").classList.add("d-none");
+    document.getElementById("saveBtn").classList.remove("d-none");
+    document.getElementById("cancelBtn").classList.remove("d-none");
+
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  window.saveEdit = async function () {
+    const taskId = document.getElementById("editTaskId").value;
+    const title = document.getElementById("title").value.trim();
+    const description = document.getElementById("description").value.trim();
+    const assignedTo = document.getElementById("assignedTo").value.trim();
+    const message = document.getElementById("message");
+
+    if (!title || !description || !assignedTo) {
+      message.innerText = "Please fill in all fields.";
+      message.className = "text-danger mt-2";
+      return;
+    }
+
+    await updateDoc(doc(db, "tasks", taskId), {
+      title,
+      description,
+      assignedTo
+    });
+
+    message.innerText = "Task updated successfully!";
+    message.className = "text-success mt-2";
+    clearForm();
+  };
+
+  window.cancelEdit = function () {
+    clearForm();
+  };
+
+  function clearForm() {
+    document.getElementById("editTaskId").value = "";
+    document.getElementById("title").value = "";
+    document.getElementById("description").value = "";
+    document.getElementById("assignedTo").value = "";
+
+    document.getElementById("formTitle").innerText = "Add New Task";
+    document.getElementById("addBtn").classList.remove("d-none");
+    document.getElementById("saveBtn").classList.add("d-none");
+    document.getElementById("cancelBtn").classList.add("d-none");
+  }
 
   window.markCompleted = async function (taskId) {
     await updateDoc(doc(db, "tasks", taskId), {
@@ -176,9 +232,7 @@
   };
 
   window.deleteTask = async function (taskId) {
-    const confirmDelete = confirm("Are you sure you want to delete this task?");
-
-    if (confirmDelete) {
+    if (confirm("Are you sure you want to delete this task?")) {
       await deleteDoc(doc(db, "tasks", taskId));
     }
   };
