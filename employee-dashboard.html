@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Employee Dashboard</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-light">
+
+<nav class="navbar navbar-dark bg-dark">
+  <div class="container-fluid">
+    <span class="navbar-brand">Employee Dashboard</span>
+    <button onclick="logout()" class="btn btn-outline-light">Logout</button>
+  </div>
+</nav>
+
+<div class="container mt-4">
+  <h2>My Tasks</h2>
+  <p class="text-muted" id="userEmail">Loading user...</p>
+
+  <div class="card shadow-sm mt-4">
+    <div class="card-header bg-dark text-white">
+      Assigned Tasks
+    </div>
+    <div class="card-body">
+      <div id="taskList">Loading tasks...</div>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+  import { app } from "./firebase-config.js";
+
+  import {
+    getAuth,
+    onAuthStateChanged,
+    signOut
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+  import {
+    getFirestore,
+    collection,
+    query,
+    where,
+    onSnapshot,
+    doc,
+    updateDoc
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      document.getElementById("userEmail").innerText = "Logged in as: " + user.email;
+      loadMyTasks(user.email);
+    } else {
+      window.location.href = "login.html";
+    }
+  });
+
+  function loadMyTasks(email) {
+    const taskList = document.getElementById("taskList");
+
+    const q = query(
+      collection(db, "tasks"),
+      where("assignedTo", "==", email)
+    );
+
+    onSnapshot(q, (querySnapshot) => {
+      let html = "";
+
+      querySnapshot.forEach((taskDoc) => {
+        const task = taskDoc.data();
+        const taskId = taskDoc.id;
+
+        const badgeClass = task.status === "Completed" ? "bg-success" : "bg-primary";
+
+        html += `
+          <div class="border rounded p-3 mb-3">
+            <h5>${task.title}</h5>
+            <p>${task.description}</p>
+            <span class="badge ${badgeClass}">${task.status}</span>
+
+            ${
+              task.status === "Pending"
+                ? `<br><button class="btn btn-sm btn-success mt-3" onclick="markCompleted('${taskId}')">Mark Completed</button>`
+                : `<br><button class="btn btn-sm btn-secondary mt-3" onclick="markPending('${taskId}')">Mark Pending</button>`
+            }
+          </div>
+        `;
+      });
+
+      taskList.innerHTML = html || "No tasks assigned to you.";
+    });
+  }
+
+  window.markCompleted = async function (taskId) {
+    await updateDoc(doc(db, "tasks", taskId), {
+      status: "Completed"
+    });
+  };
+
+  window.markPending = async function (taskId) {
+    await updateDoc(doc(db, "tasks", taskId), {
+      status: "Pending"
+    });
+  };
+
+  window.logout = function () {
+    signOut(auth).then(() => {
+      window.location.href = "login.html";
+    });
+  };
+</script>
+
+</body>
+</html>
