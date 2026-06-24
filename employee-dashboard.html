@@ -429,7 +429,8 @@
 <div class="toast-wrap" id="toastWrap"></div>
 
 <script type="module">
-  import { app } from "./firebase-config.js";
+  import { guardPage } from "./auth-guard.js";
+  guardPage("employee");
   import {
     getAuth, onAuthStateChanged, signOut
   } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
