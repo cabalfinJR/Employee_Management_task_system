@@ -39,7 +39,8 @@
 </div>
 
 <script type="module">
-  import { app } from "./firebase-config.js";
+  import { guardPage } from "./auth-guard.js";
+  guardPage("admin");
 
   import {
     getAuth,
