@@ -1,373 +1,89 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Employee Dashboard</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    :root {
-      --brand:       #4F46E5;
-      --brand-soft:  #EEF2FF;
-      --brand-mid:   #818CF8;
-      --success:     #059669;
-      --success-soft:#D1FAE5;
-      --warn:        #D97706;
-      --warn-soft:   #FEF3C7;
-      --danger:      #DC2626;
-      --danger-soft: #FEE2E2;
-      --text-1:      #111827;
-      --text-2:      #6B7280;
-      --text-3:      #9CA3AF;
-      --bg:          #F9FAFB;
-      --surface:     #FFFFFF;
-      --border:      #E5E7EB;
-      --radius:      12px;
-      --radius-sm:   8px;
-    }
-
-    body {
-      font-family: 'Inter', sans-serif;
-      background: var(--bg);
-      color: var(--text-1);
-      min-height: 100vh;
-    }
-
-    /* ── NAV ── */
-    nav {
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
-      padding: 0 1.5rem;
-      height: 60px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
-    .nav-brand {
-      font-family: 'Space Grotesk', sans-serif;
-      font-weight: 700;
-      font-size: 17px;
-      color: var(--brand);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .nav-brand i { font-size: 20px; }
-    .nav-right { display: flex; align-items: center; gap: 12px; }
-    .nav-clock {
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--text-2);
-      background: var(--bg);
-      padding: 4px 12px;
-      border-radius: 20px;
-      border: 1px solid var(--border);
-    }
-    .btn-logout {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--text-2);
-      background: transparent;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      padding: 6px 14px;
-      cursor: pointer;
-      transition: all 0.15s;
-    }
-    .btn-logout:hover { background: var(--bg); color: var(--danger); border-color: var(--danger); }
-
-    /* ── LAYOUT ── */
-    .page { max-width: 860px; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
-
-    /* ── HERO GREETING ── */
-    .hero {
-      background: var(--brand);
-      border-radius: var(--radius);
-      padding: 1.5rem 1.75rem;
-      color: white;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 1rem;
-      margin-bottom: 1.25rem;
-      position: relative;
-      overflow: hidden;
-    }
-    .hero::before {
-      content: '';
-      position: absolute;
-      right: -40px;
-      top: -40px;
-      width: 180px;
-      height: 180px;
-      background: rgba(255,255,255,0.06);
-      border-radius: 50%;
-    }
-    .hero::after {
-      content: '';
-      position: absolute;
-      right: 40px;
-      bottom: -50px;
-      width: 120px;
-      height: 120px;
-      background: rgba(255,255,255,0.04);
-      border-radius: 50%;
-    }
-    .hero-left { z-index: 1; }
-    .hero-label {
-      font-size: 12px;
-      font-weight: 500;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      opacity: 0.75;
-      margin-bottom: 4px;
-    }
-    .hero-name {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 22px;
-      font-weight: 700;
-      margin-bottom: 4px;
-    }
-    .hero-sub { font-size: 13px; opacity: 0.8; }
-    .hero-avatar {
-      width: 56px;
-      height: 56px;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.18);
-      border: 2px solid rgba(255,255,255,0.35);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 20px;
-      font-weight: 700;
-      flex-shrink: 0;
-      z-index: 1;
-    }
-
-    /* ── STAT STRIP ── */
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-      margin-bottom: 1.25rem;
-    }
-    .stat-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 1rem 1.1rem;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      transition: transform 0.15s;
-    }
-    .stat-card:hover { transform: translateY(-2px); }
-    .stat-icon {
-      width: 40px;
-      height: 40px;
-      border-radius: var(--radius-sm);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 20px;
-      flex-shrink: 0;
-    }
-    .stat-icon.blue  { background: var(--brand-soft);   color: var(--brand); }
-    .stat-icon.green { background: var(--success-soft);  color: var(--success); }
-    .stat-icon.amber { background: var(--warn-soft);     color: var(--warn); }
-    .stat-label { font-size: 12px; color: var(--text-2); margin-bottom: 2px; }
-    .stat-value { font-family: 'Space Grotesk', sans-serif; font-size: 22px; font-weight: 700; color: var(--text-1); }
-
-    /* ── SECTION TITLE ── */
-    .section-title {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 16px;
-      font-weight: 700;
-      color: var(--text-1);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 12px;
-    }
-    .section-title i { font-size: 18px; color: var(--brand); }
-
-    /* ── FILTER TABS ── */
-    .filter-row {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 16px;
-      flex-wrap: wrap;
-    }
-    .filter-btn {
-      font-size: 12px;
-      font-weight: 500;
-      padding: 5px 14px;
-      border-radius: 20px;
-      border: 1px solid var(--border);
-      background: var(--surface);
-      color: var(--text-2);
-      cursor: pointer;
-      transition: all 0.15s;
-    }
-    .filter-btn.active, .filter-btn:hover {
-      background: var(--brand);
-      color: white;
-      border-color: var(--brand);
-    }
-
-    /* ── TASK CARDS ── */
-    #taskList { display: flex; flex-direction: column; gap: 10px; }
-
-    .task-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 1rem 1.25rem;
-      display: flex;
-      align-items: flex-start;
-      gap: 14px;
-      transition: box-shadow 0.2s, transform 0.15s;
-      animation: slideIn 0.3s ease both;
-    }
-    @keyframes slideIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-    .task-card:hover { box-shadow: 0 4px 16px rgba(79,70,229,0.08); transform: translateY(-1px); }
-    .task-card.completed { opacity: 0.7; border-left: 3px solid var(--success); }
-    .task-card.pending   { border-left: 3px solid var(--brand); }
-
-    .task-check {
-      width: 22px;
-      height: 22px;
-      border-radius: 50%;
-      border: 2px solid var(--border);
-      flex-shrink: 0;
-      margin-top: 2px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .task-check.done { background: var(--success); border-color: var(--success); color: white; }
-    .task-check i { font-size: 12px; }
-
-    .task-body { flex: 1; min-width: 0; }
-    .task-title {
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--text-1);
-      margin-bottom: 3px;
-    }
-    .task-card.completed .task-title { text-decoration: line-through; color: var(--text-2); }
-    .task-desc { font-size: 13px; color: var(--text-2); line-height: 1.5; margin-bottom: 10px; }
-
-    .task-footer { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-    .badge {
-      font-size: 11px;
-      font-weight: 500;
-      padding: 3px 10px;
-      border-radius: 20px;
-    }
-    .badge-pending   { background: var(--brand-soft);   color: var(--brand); }
-    .badge-completed { background: var(--success-soft);  color: var(--success); }
-
-    .task-action {
-      margin-left: auto;
-      font-size: 12px;
-      font-weight: 500;
-      padding: 5px 14px;
-      border-radius: var(--radius-sm);
-      border: none;
-      cursor: pointer;
-      transition: all 0.15s;
-    }
-    .btn-complete { background: var(--success-soft); color: var(--success); }
-    .btn-complete:hover { background: var(--success); color: white; }
-    .btn-pending  { background: var(--bg); color: var(--text-2); border: 1px solid var(--border); }
-    .btn-pending:hover { background: var(--warn-soft); color: var(--warn); border-color: var(--warn); }
-
-    /* ── EMPTY STATE ── */
-    .empty {
-      text-align: center;
-      padding: 3rem 1rem;
-      color: var(--text-3);
-    }
-    .empty i { font-size: 40px; margin-bottom: 12px; display: block; }
-    .empty p { font-size: 14px; }
-
-    /* ── TOAST ── */
-    .toast-wrap {
-      position: fixed;
-      bottom: 24px;
-      right: 24px;
-      z-index: 999;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-    .toast {
-      background: var(--text-1);
-      color: white;
-      font-size: 13px;
-      font-weight: 500;
-      padding: 10px 16px;
-      border-radius: var(--radius-sm);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      animation: toastIn 0.3s ease;
-    }
-    @keyframes toastIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    /* ── SKELETON ── */
-    .skeleton {
-      background: linear-gradient(90deg, var(--border) 25%, var(--bg) 50%, var(--border) 75%);
-      background-size: 200% 100%;
-      animation: shimmer 1.2s infinite;
-      border-radius: var(--radius-sm);
-    }
-    @keyframes shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
-
-    @media (max-width: 600px) {
-      .stats { grid-template-columns: 1fr 1fr; }
-      .hero { flex-direction: column; align-items: flex-start; }
-    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    :root{--brand:#4F46E5;--brand-soft:#EEF2FF;--brand-mid:#818CF8;--success:#059669;--success-soft:#D1FAE5;--warn:#D97706;--warn-soft:#FEF3C7;--danger:#DC2626;--danger-soft:#FEE2E2;--text-1:#111827;--text-2:#6B7280;--text-3:#9CA3AF;--bg:#F9FAFB;--surface:#FFFFFF;--border:#E5E7EB;--radius:12px;--radius-sm:8px;}
+    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text-1);min-height:100vh;}
+    nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 1.5rem;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+    .nav-brand{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:17px;color:var(--brand);display:flex;align-items:center;gap:8px;}
+    .nav-right{display:flex;align-items:center;gap:12px;}
+    .nav-clock{font-size:13px;font-weight:500;color:var(--text-2);background:var(--bg);padding:4px 12px;border-radius:20px;border:1px solid var(--border);}
+    .btn-logout{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:500;color:var(--text-2);background:transparent;border:1px solid var(--border);border-radius:var(--radius-sm);padding:6px 14px;cursor:pointer;transition:all 0.15s;}
+    .btn-logout:hover{background:var(--bg);color:var(--danger);border-color:var(--danger);}
+    .page{max-width:860px;margin:0 auto;padding:2rem 1.25rem 4rem;}
+    .hero{background:var(--brand);border-radius:var(--radius);padding:1.5rem 1.75rem;color:white;display:flex;align-items:center;justify-content:space-between;gap:1rem;margin-bottom:1.25rem;position:relative;overflow:hidden;}
+    .hero::before{content:'';position:absolute;right:-40px;top:-40px;width:180px;height:180px;background:rgba(255,255,255,0.06);border-radius:50%;}
+    .hero::after{content:'';position:absolute;right:40px;bottom:-50px;width:120px;height:120px;background:rgba(255,255,255,0.04);border-radius:50%;}
+    .hero-left{z-index:1;}
+    .hero-label{font-size:12px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;opacity:0.75;margin-bottom:4px;}
+    .hero-name{font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;margin-bottom:4px;}
+    .hero-sub{font-size:13px;opacity:0.8;}
+    .hero-avatar{width:56px;height:56px;border-radius:50%;background:rgba(255,255,255,0.18);border:2px solid rgba(255,255,255,0.35);display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:700;flex-shrink:0;z-index:1;}
+    .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:1.25rem;}
+    .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1rem 1.1rem;display:flex;align-items:center;gap:12px;transition:transform 0.15s;}
+    .stat-card:hover{transform:translateY(-2px);}
+    .stat-icon{width:40px;height:40px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+    .stat-icon.blue{background:var(--brand-soft);color:var(--brand);}
+    .stat-icon.green{background:var(--success-soft);color:var(--success);}
+    .stat-icon.amber{background:var(--warn-soft);color:var(--warn);}
+    .stat-label{font-size:12px;color:var(--text-2);margin-bottom:2px;}
+    .stat-value{font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;color:var(--text-1);}
+    .section-title{font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:700;color:var(--text-1);display:flex;align-items:center;gap:8px;margin-bottom:12px;}
+    .section-title i{font-size:18px;color:var(--brand);}
+    .filter-row{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;}
+    .filter-btn{font-size:12px;font-weight:500;padding:5px 14px;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--text-2);cursor:pointer;transition:all 0.15s;}
+    .filter-btn.active,.filter-btn:hover{background:var(--brand);color:white;border-color:var(--brand);}
+    #taskList{display:flex;flex-direction:column;gap:10px;}
+    .task-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1rem 1.25rem;display:flex;align-items:flex-start;gap:14px;transition:box-shadow 0.2s,transform 0.15s;animation:slideIn 0.3s ease both;}
+    @keyframes slideIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+    .task-card:hover{box-shadow:0 4px 16px rgba(79,70,229,0.08);transform:translateY(-1px);}
+    .task-card.completed{opacity:0.7;border-left:3px solid var(--success);}
+    .task-card.pending{border-left:3px solid var(--brand);}
+    .task-check{width:22px;height:22px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.2s;}
+    .task-check.done{background:var(--success);border-color:var(--success);color:white;}
+    .task-check i{font-size:12px;}
+    .task-body{flex:1;min-width:0;}
+    .task-title{font-size:14px;font-weight:600;color:var(--text-1);margin-bottom:3px;}
+    .task-card.completed .task-title{text-decoration:line-through;color:var(--text-2);}
+    .task-desc{font-size:13px;color:var(--text-2);line-height:1.5;margin-bottom:10px;}
+    .task-footer{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+    .badge{font-size:11px;font-weight:500;padding:3px 10px;border-radius:20px;}
+    .badge-pending{background:var(--brand-soft);color:var(--brand);}
+    .badge-completed{background:var(--success-soft);color:var(--success);}
+    .task-action{margin-left:auto;font-size:12px;font-weight:500;padding:5px 14px;border-radius:var(--radius-sm);border:none;cursor:pointer;transition:all 0.15s;}
+    .btn-complete{background:var(--success-soft);color:var(--success);}
+    .btn-complete:hover{background:var(--success);color:white;}
+    .btn-pending{background:var(--bg);color:var(--text-2);border:1px solid var(--border);}
+    .btn-pending:hover{background:var(--warn-soft);color:var(--warn);border-color:var(--warn);}
+    .empty{text-align:center;padding:3rem 1rem;color:var(--text-3);}
+    .empty i{font-size:40px;margin-bottom:12px;display:block;}
+    .empty p{font-size:14px;}
+    .toast-wrap{position:fixed;bottom:24px;right:24px;z-index:999;display:flex;flex-direction:column;gap:8px;}
+    .toast{background:var(--text-1);color:white;font-size:13px;font-weight:500;padding:10px 16px;border-radius:var(--radius-sm);display:flex;align-items:center;gap:8px;animation:toastIn 0.3s ease;}
+    @keyframes toastIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+    .skeleton{background:linear-gradient(90deg,var(--border) 25%,var(--bg) 50%,var(--border) 75%);background-size:200% 100%;animation:shimmer 1.2s infinite;border-radius:var(--radius-sm);}
+    @keyframes shimmer{from{background-position:200% 0;}to{background-position:-200% 0;}}
+    @media(max-width:600px){.stats{grid-template-columns:1fr 1fr;}.hero{flex-direction:column;align-items:flex-start;}}
   </style>
 </head>
 <body>
 
 <nav>
-  <div class="nav-brand">
-    <i class="ti ti-layout-dashboard"></i>
-    My Dashboard
-  </div>
+  <div class="nav-brand"><i class="ti ti-layout-dashboard"></i> My Dashboard</div>
   <div class="nav-right">
     <span class="nav-clock" id="navClock">--:--:--</span>
-    <button class="btn-logout" onclick="logout()">
-      <i class="ti ti-logout"></i> Sign out
-    </button>
+    <button class="btn-logout" onclick="logout()"><i class="ti ti-logout"></i> Sign out</button>
   </div>
 </nav>
 
 <div class="page">
-
-  <!-- HERO -->
   <div class="hero">
     <div class="hero-left">
       <div class="hero-label">Welcome back</div>
@@ -377,82 +93,94 @@
     <div class="hero-avatar" id="heroAvatar">??</div>
   </div>
 
-  <!-- STATS -->
   <div class="stats">
     <div class="stat-card">
       <div class="stat-icon blue"><i class="ti ti-clipboard-list"></i></div>
-      <div>
-        <div class="stat-label">Total tasks</div>
-        <div class="stat-value" id="statTotal">—</div>
-      </div>
+      <div><div class="stat-label">Total tasks</div><div class="stat-value" id="statTotal">—</div></div>
     </div>
     <div class="stat-card">
       <div class="stat-icon green"><i class="ti ti-circle-check"></i></div>
-      <div>
-        <div class="stat-label">Completed</div>
-        <div class="stat-value" id="statDone">—</div>
-      </div>
+      <div><div class="stat-label">Completed</div><div class="stat-value" id="statDone">—</div></div>
     </div>
     <div class="stat-card">
       <div class="stat-icon amber"><i class="ti ti-clock"></i></div>
-      <div>
-        <div class="stat-label">Pending</div>
-        <div class="stat-value" id="statPending">—</div>
-      </div>
+      <div><div class="stat-label">Pending</div><div class="stat-value" id="statPending">—</div></div>
     </div>
   </div>
 
-  <!-- TASK LIST -->
-  <div class="section-title">
-    <i class="ti ti-list-check"></i>
-    My tasks
-  </div>
-
+  <div class="section-title"><i class="ti ti-list-check"></i> My tasks</div>
   <div class="filter-row">
-    <button class="filter-btn active" data-filter="all" onclick="setFilter('all', this)">All</button>
-    <button class="filter-btn" data-filter="Pending" onclick="setFilter('Pending', this)">Pending</button>
-    <button class="filter-btn" data-filter="Completed" onclick="setFilter('Completed', this)">Completed</button>
+    <button class="filter-btn active" onclick="setFilter('all',this)">All</button>
+    <button class="filter-btn" onclick="setFilter('Pending',this)">Pending</button>
+    <button class="filter-btn" onclick="setFilter('Completed',this)">Completed</button>
   </div>
 
   <div id="taskList">
-    <!-- skeleton -->
     <div style="display:flex;flex-direction:column;gap:10px;">
       <div class="skeleton" style="height:90px;"></div>
       <div class="skeleton" style="height:90px;"></div>
       <div class="skeleton" style="height:90px;"></div>
     </div>
   </div>
-
 </div>
 
-<!-- TOAST CONTAINER -->
 <div class="toast-wrap" id="toastWrap"></div>
 
 <script type="module">
-  import { guardPage } from "./auth-guard.js";
-  guardPage("employee");
+  // ── IMPORTS (app first, always) ──
+  import { app } from "./firebase-config.js";
+  import { getAuth, onAuthStateChanged, signOut }
+    from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
   import {
-    getAuth, onAuthStateChanged, signOut
-  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-  import {
-    getFirestore, collection, query, where, onSnapshot, doc, updateDoc
+    getFirestore, collection, query, where,
+    onSnapshot, doc, updateDoc, getDocs
   } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
   const auth = getAuth(app);
   const db   = getFirestore(app);
 
-  // ── clock ──
+  // ── CLOCK (no auth needed) ──
   function tick() {
     document.getElementById('navClock').textContent =
-      new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      new Date().toLocaleTimeString([], { hour:'2-digit', minute:'2-digit', second:'2-digit' });
   }
   setInterval(tick, 1000); tick();
 
-  // ── greeting ──
+  // ── GREETING ──
   const h = new Date().getHours();
   const greet = h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening';
 
-  // ── filter state ──
+  // ── AUTH GUARD (inline) ──
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) { window.location.href = 'login.html'; return; }
+
+    // Check role
+    const q    = query(collection(db, 'users'), where('email', '==', user.email));
+    const snap = await getDocs(q);
+    if (snap.empty) { window.location.href = 'login.html'; return; }
+
+    let role = '';
+    snap.forEach(d => { role = d.data().role; });
+
+    if (role !== 'employee') {
+      // Admin tried to access employee page — send them to admin dashboard
+      window.location.href = 'admin-dashboard.html';
+      return;
+    }
+
+    // ✅ Confirmed employee — set up UI
+    const emailPart  = user.email.split('@')[0];
+    const name       = emailPart.charAt(0).toUpperCase() + emailPart.slice(1);
+    const initials   = name.slice(0,2).toUpperCase();
+
+    document.getElementById('heroName').textContent   = greet + ', ' + name + ' 👋';
+    document.getElementById('heroSub').textContent    = user.email;
+    document.getElementById('heroAvatar').textContent = initials;
+
+    loadTasks(user.email);
+  });
+
+  // ── FILTER ──
   let currentFilter = 'all';
   let allTasks = [];
 
@@ -463,24 +191,9 @@
     renderTasks();
   };
 
-  // ── auth ──
-  onAuthStateChanged(auth, (user) => {
-    if (!user) { window.location.href = 'login.html'; return; }
-
-    const emailParts = user.email.split('@')[0];
-    const displayName = emailParts.charAt(0).toUpperCase() + emailParts.slice(1);
-    const initials = displayName.slice(0, 2).toUpperCase();
-
-    document.getElementById('heroName').textContent = greet + ', ' + displayName + ' 👋';
-    document.getElementById('heroSub').textContent  = user.email;
-    document.getElementById('heroAvatar').textContent = initials;
-
-    loadTasks(user.email);
-  });
-
-  // ── load tasks ──
+  // ── TASKS ──
   function loadTasks(email) {
-    const q = query(collection(db, 'tasks'), where('assignedTo', '==', email));
+    const q = query(collection(db,'tasks'), where('assignedTo','==',email));
     onSnapshot(q, (snap) => {
       allTasks = snap.docs.map(d => ({ id: d.id, ...d.data() }));
       updateStats();
@@ -492,90 +205,61 @@
     const total   = allTasks.length;
     const done    = allTasks.filter(t => t.status === 'Completed').length;
     const pending = allTasks.filter(t => t.status === 'Pending').length;
-    animateNum('statTotal',   total);
-    animateNum('statDone',    done);
+    animateNum('statTotal', total);
+    animateNum('statDone', done);
     animateNum('statPending', pending);
   }
 
   function animateNum(id, target) {
-    let cur = 0;
-    const el = document.getElementById(id);
-    const prev = parseInt(el.textContent) || 0;
-    cur = prev;
-    const step = target > prev ? 1 : -1;
+    const el  = document.getElementById(id);
+    let cur   = parseInt(el.textContent) || 0;
     if (cur === target) { el.textContent = target; return; }
-    const iv = setInterval(() => {
-      cur += step;
-      el.textContent = cur;
-      if (cur === target) clearInterval(iv);
-    }, 60);
+    const step = target > cur ? 1 : -1;
+    const iv = setInterval(() => { cur += step; el.textContent = cur; if (cur === target) clearInterval(iv); }, 60);
   }
 
   function renderTasks() {
-    const list = document.getElementById('taskList');
-    const filtered = currentFilter === 'all'
-      ? allTasks
-      : allTasks.filter(t => t.status === currentFilter);
-
+    const list     = document.getElementById('taskList');
+    const filtered = currentFilter === 'all' ? allTasks : allTasks.filter(t => t.status === currentFilter);
     if (filtered.length === 0) {
-      list.innerHTML = `
-        <div class="empty">
-          <i class="ti ti-clipboard-x"></i>
-          <p>${currentFilter === 'all' ? 'No tasks assigned to you yet.' : 'No ' + currentFilter.toLowerCase() + ' tasks.'}</p>
-        </div>`;
+      list.innerHTML = `<div class="empty"><i class="ti ti-clipboard-x"></i><p>${currentFilter === 'all' ? 'No tasks assigned to you yet.' : 'No ' + currentFilter.toLowerCase() + ' tasks.'}</p></div>`;
       return;
     }
-
-    // sort: pending first
-    const sorted = [...filtered].sort((a, b) => {
-      if (a.status === b.status) return 0;
-      return a.status === 'Pending' ? -1 : 1;
-    });
-
+    const sorted = [...filtered].sort((a,b) => a.status === b.status ? 0 : a.status === 'Pending' ? -1 : 1);
     list.innerHTML = sorted.map((task, i) => {
       const done = task.status === 'Completed';
       return `
-        <div class="task-card ${done ? 'completed' : 'pending'}" style="animation-delay:${i * 0.05}s">
-          <div class="task-check ${done ? 'done' : ''}" onclick="${done ? "markPending" : "markCompleted"}('${task.id}')">
+        <div class="task-card ${done?'completed':'pending'}" style="animation-delay:${i*0.05}s">
+          <div class="task-check ${done?'done':''}" onclick="${done?'markPending':'markCompleted'}('${task.id}')">
             ${done ? '<i class="ti ti-check"></i>' : ''}
           </div>
           <div class="task-body">
-            <div class="task-title">${task.title || 'Untitled task'}</div>
-            <div class="task-desc">${task.description || ''}</div>
+            <div class="task-title">${task.title||'Untitled task'}</div>
+            <div class="task-desc">${task.description||''}</div>
             <div class="task-footer">
-              <span class="badge ${done ? 'badge-completed' : 'badge-pending'}">
-                ${done ? 'Completed' : 'Pending'}
-              </span>
+              <span class="badge ${done?'badge-completed':'badge-pending'}">${done?'Completed':'Pending'}</span>
               ${done
-                ? `<button class="task-action btn-pending" onclick="markPending('${task.id}')">
-                     <i class="ti ti-refresh" style="font-size:12px;vertical-align:-1px;"></i> Mark pending
-                   </button>`
-                : `<button class="task-action btn-complete" onclick="markCompleted('${task.id}')">
-                     <i class="ti ti-check" style="font-size:12px;vertical-align:-1px;"></i> Mark complete
-                   </button>`
-              }
+                ? `<button class="task-action btn-pending" onclick="markPending('${task.id}')"><i class="ti ti-refresh" style="font-size:12px;vertical-align:-1px;"></i> Mark pending</button>`
+                : `<button class="task-action btn-complete" onclick="markCompleted('${task.id}')"><i class="ti ti-check" style="font-size:12px;vertical-align:-1px;"></i> Mark complete</button>`}
             </div>
           </div>
         </div>`;
     }).join('');
   }
 
-  // ── actions ──
   window.markCompleted = async function(taskId) {
-    await updateDoc(doc(db, 'tasks', taskId), { status: 'Completed' });
-    showToast('✓ Task marked as completed', 'success');
+    await updateDoc(doc(db,'tasks',taskId), { status:'Completed' });
+    showToast('✓ Task marked as completed','success');
   };
-
   window.markPending = async function(taskId) {
-    await updateDoc(doc(db, 'tasks', taskId), { status: 'Pending' });
-    showToast('↩ Task moved back to pending', 'warn');
+    await updateDoc(doc(db,'tasks',taskId), { status:'Pending' });
+    showToast('↩ Task moved back to pending','warn');
   };
 
   window.logout = function() {
     signOut(auth).then(() => window.location.href = 'login.html');
   };
 
-  // ── toast ──
   function showToast(msg, type) {
     const wrap  = document.getElementById('toastWrap');
     const toast = document.createElement('div');
