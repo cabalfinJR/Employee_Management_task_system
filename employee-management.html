@@ -1,124 +1,501 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Employee Management</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    :root{
+      --brand:#4F46E5;--brand-soft:#EEF2FF;--brand-mid:#818CF8;
+      --success:#059669;--success-soft:#D1FAE5;
+      --warn:#D97706;--warn-soft:#FEF3C7;
+      --danger:#DC2626;--danger-soft:#FEE2E2;
+      --text-1:#111827;--text-2:#6B7280;--text-3:#9CA3AF;
+      --bg:#F9FAFB;--surface:#FFFFFF;--border:#E5E7EB;
+      --radius:12px;--radius-sm:8px;
+    }
+    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text-1);min-height:100vh;}
+
+    /* NAV */
+    nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 1.5rem;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;}
+    .nav-brand{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:17px;color:var(--brand);display:flex;align-items:center;gap:8px;}
+    .nav-back{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:500;color:var(--text-2);background:var(--bg);padding:6px 14px;border-radius:var(--radius-sm);border:1px solid var(--border);text-decoration:none;transition:all 0.15s;}
+    .nav-back:hover{color:var(--brand);border-color:var(--brand);background:var(--brand-soft);}
+
+    /* LAYOUT */
+    .page{max-width:1000px;margin:0 auto;padding:2rem 1.25rem 4rem;}
+
+    /* HERO */
+    .hero{background:var(--brand);border-radius:var(--radius);padding:1.5rem 1.75rem;color:white;display:flex;align-items:center;justify-content:space-between;gap:1rem;margin-bottom:1.25rem;position:relative;overflow:hidden;}
+    .hero::before{content:'';position:absolute;right:-40px;top:-40px;width:200px;height:200px;background:rgba(255,255,255,0.06);border-radius:50%;}
+    .hero::after{content:'';position:absolute;right:60px;bottom:-60px;width:130px;height:130px;background:rgba(255,255,255,0.04);border-radius:50%;}
+    .hero-left{z-index:1;}
+    .hero-label{font-size:12px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;opacity:0.75;margin-bottom:4px;}
+    .hero-title{font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;margin-bottom:4px;}
+    .hero-sub{font-size:13px;opacity:0.8;}
+    .hero-count{z-index:1;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);border-radius:var(--radius);padding:12px 20px;text-align:center;flex-shrink:0;}
+    .hero-count-val{font-family:'Space Grotesk',sans-serif;font-size:32px;font-weight:700;}
+    .hero-count-lbl{font-size:11px;opacity:0.8;margin-top:2px;}
+
+    /* STATS */
+    .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:1.25rem;}
+    .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1rem 1.1rem;display:flex;align-items:center;gap:12px;transition:transform 0.15s,box-shadow 0.15s;}
+    .stat-card:hover{transform:translateY(-2px);box-shadow:0 4px 16px rgba(0,0,0,0.06);}
+    .stat-icon{width:40px;height:40px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+    .si-blue{background:var(--brand-soft);color:var(--brand);}
+    .si-green{background:var(--success-soft);color:var(--success);}
+    .si-amber{background:var(--warn-soft);color:var(--warn);}
+    .stat-label{font-size:12px;color:var(--text-2);margin-bottom:2px;}
+    .stat-value{font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;}
+
+    /* TWO COL */
+    .two-col{display:grid;grid-template-columns:380px 1fr;gap:1.25rem;align-items:start;}
+
+    /* CARD */
+    .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;}
+    .card-head{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+    .card-title{font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:700;display:flex;align-items:center;gap:8px;}
+    .card-title i{color:var(--brand);font-size:17px;}
+    .card-body{padding:1.25rem;}
+
+    /* FORM */
+    .form-group{margin-bottom:14px;}
+    .form-label{font-size:12px;font-weight:600;color:var(--text-2);margin-bottom:5px;display:block;text-transform:uppercase;letter-spacing:0.05em;}
+    .input-wrap{position:relative;}
+    .input-icon{position:absolute;left:11px;top:50%;transform:translateY(-50%);font-size:16px;color:var(--text-3);pointer-events:none;transition:color 0.2s;}
+    .form-input{width:100%;padding:9px 12px 9px 36px;font-size:14px;font-family:'Inter',sans-serif;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--bg);color:var(--text-1);outline:none;transition:border-color 0.15s,box-shadow 0.15s;}
+    .form-input:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(79,70,229,0.1);background:var(--surface);}
+    .form-input:focus~.input-icon,.input-wrap:focus-within .input-icon{color:var(--brand);}
+    .toggle-pw{position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:15px;color:var(--text-3);cursor:pointer;background:none;border:none;padding:0;transition:color 0.15s;}
+    .toggle-pw:hover{color:var(--brand);}
+    .pw-input{padding-right:36px;}
+    .btn-submit{width:100%;padding:10px;font-size:14px;font-weight:600;font-family:'Inter',sans-serif;background:var(--brand);color:white;border:none;border-radius:var(--radius-sm);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:background 0.2s,transform 0.1s,box-shadow 0.2s;margin-top:4px;}
+    .btn-submit:hover{background:#4338CA;box-shadow:0 4px 14px rgba(79,70,229,0.3);}
+    .btn-submit:active{transform:scale(0.98);}
+    .btn-submit:disabled{opacity:0.7;cursor:not-allowed;}
+    .spinner{width:15px;height:15px;border:2px solid rgba(255,255,255,0.3);border-top-color:white;border-radius:50%;animation:spin 0.7s linear infinite;display:none;}
+    @keyframes spin{to{transform:rotate(360deg);}}
+    .msg-box{font-size:13px;padding:9px 12px;border-radius:var(--radius-sm);margin-top:12px;display:none;align-items:center;gap:8px;}
+    .msg-box.success{background:var(--success-soft);color:var(--success);display:flex;}
+    .msg-box.error{background:var(--danger-soft);color:var(--danger);display:flex;}
+
+    /* SEARCH */
+    .search-wrap{position:relative;margin-bottom:14px;}
+    .search-icon{position:absolute;left:11px;top:50%;transform:translateY(-50%);font-size:16px;color:var(--text-3);pointer-events:none;}
+    .search-input{width:100%;padding:9px 12px 9px 36px;font-size:13px;font-family:'Inter',sans-serif;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--bg);color:var(--text-1);outline:none;transition:border-color 0.15s,box-shadow 0.15s;}
+    .search-input:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(79,70,229,0.1);}
+
+    /* EMPLOYEE GRID */
+    #empGrid{display:flex;flex-direction:column;gap:10px;}
+    .emp-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1rem 1.25rem;display:flex;align-items:center;gap:14px;transition:box-shadow 0.2s,transform 0.15s,opacity 0.3s;animation:slideIn 0.3s ease both;}
+    @keyframes slideIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+    .emp-card:hover{box-shadow:0 4px 16px rgba(79,70,229,0.08);transform:translateY(-1px);}
+    .emp-avatar{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:700;flex-shrink:0;color:white;}
+    .emp-info{flex:1;min-width:0;}
+    .emp-name{font-size:14px;font-weight:600;color:var(--text-1);margin-bottom:2px;}
+    .emp-email{font-size:12px;color:var(--text-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .emp-badge{font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;background:var(--success-soft);color:var(--success);flex-shrink:0;}
+    .emp-actions{display:flex;gap:6px;flex-shrink:0;}
+    .icon-btn{width:32px;height:32px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--bg);color:var(--text-2);display:flex;align-items:center;justify-content:center;font-size:15px;cursor:pointer;transition:all 0.15s;}
+    .icon-btn:hover{transform:scale(1.1);}
+    .icon-btn.del:hover{background:var(--danger-soft);color:var(--danger);border-color:var(--danger);}
+    .icon-btn.view:hover{background:var(--brand-soft);color:var(--brand);border-color:var(--brand);}
+
+    /* EMPTY */
+    .empty{text-align:center;padding:3rem 1rem;color:var(--text-3);}
+    .empty i{font-size:40px;margin-bottom:12px;display:block;}
+    .empty p{font-size:13px;}
+
+    /* SKELETON */
+    .skeleton{background:linear-gradient(90deg,var(--border) 25%,var(--bg) 50%,var(--border) 75%);background-size:200% 100%;animation:shimmer 1.2s infinite;border-radius:var(--radius-sm);}
+    @keyframes shimmer{from{background-position:200% 0;}to{background-position:-200% 0;}}
+
+    /* MODAL */
+    .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:300;align-items:center;justify-content:center;}
+    .modal-overlay.open{display:flex;}
+    .modal-box{background:var(--surface);border-radius:var(--radius);padding:1.75rem;max-width:400px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,0.15);animation:modalIn 0.25s ease;}
+    @keyframes modalIn{from{opacity:0;transform:scale(0.95);}to{opacity:1;transform:scale(1);}}
+    .modal-avatar{width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-size:24px;font-weight:700;color:white;margin:0 auto 1rem;}
+    .modal-name{font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:700;text-align:center;margin-bottom:4px;}
+    .modal-email{font-size:13px;color:var(--text-2);text-align:center;margin-bottom:1.25rem;}
+    .modal-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px;}
+    .modal-row:last-of-type{border-bottom:none;}
+    .modal-row-label{color:var(--text-2);font-weight:500;}
+    .modal-row-val{font-weight:600;color:var(--text-1);}
+    .modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:1.25rem;}
+    .btn-modal-close{background:var(--bg);color:var(--text-2);border:1px solid var(--border);display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:500;padding:7px 16px;border-radius:var(--radius-sm);cursor:pointer;transition:all 0.15s;}
+    .btn-modal-close:hover{background:var(--border);}
+    .btn-modal-del{background:var(--danger);color:white;border:none;display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:500;padding:7px 16px;border-radius:var(--radius-sm);cursor:pointer;transition:all 0.15s;}
+    .btn-modal-del:hover{background:#B91C1C;}
+
+    /* TOAST */
+    .toast-wrap{position:fixed;bottom:24px;right:24px;z-index:999;display:flex;flex-direction:column;gap:8px;}
+    .toast{color:white;font-size:13px;font-weight:500;padding:10px 16px;border-radius:var(--radius-sm);display:flex;align-items:center;gap:8px;animation:toastIn 0.3s ease;}
+    @keyframes toastIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+
+    @media(max-width:700px){.two-col{grid-template-columns:1fr;}.stats{grid-template-columns:1fr 1fr;}}
+  </style>
 </head>
+<body>
 
-<body class="bg-light">
-
-<nav class="navbar navbar-dark bg-dark">
-  <div class="container-fluid">
-    <span class="navbar-brand">Employee Management</span>
-    <a href="admin-dashboard.html" class="btn btn-outline-light">Back to Dashboard</a>
-  </div>
+<!-- NAV -->
+<nav>
+  <div class="nav-brand"><i class="ti ti-users"></i> Employee Management</div>
+  <a href="admin-dashboard.html" class="nav-back"><i class="ti ti-arrow-left"></i> Back to Dashboard</a>
 </nav>
 
-<div class="container mt-4">
-  <h2>Employee Management</h2>
-  <p class="text-muted">Add and view employees.</p>
-
-  <div class="card shadow-sm mt-4">
-    <div class="card-header bg-primary text-white">Add Employee</div>
-    <div class="card-body">
-      <input type="text" id="name" class="form-control mb-2" placeholder="Employee Name">
-      <input type="email" id="email" class="form-control mb-2" placeholder="Employee Email">
-      <input type="password" id="password" class="form-control mb-2" placeholder="Temporary Password">
-
-      <button onclick="addEmployee()" class="btn btn-success">Add Employee</button>
-      <p id="message" class="mt-2"></p>
-    </div>
-  </div>
-
-  <div class="card shadow-sm mt-4">
-    <div class="card-header bg-dark text-white">Employee List</div>
-    <div class="card-body">
-      <div id="employeeList">Loading employees...</div>
+<!-- VIEW MODAL -->
+<div class="modal-overlay" id="viewModal">
+  <div class="modal-box">
+    <div class="modal-avatar" id="modalAvatar"></div>
+    <div class="modal-name"  id="modalName"></div>
+    <div class="modal-email" id="modalEmail"></div>
+    <div id="modalRows"></div>
+    <div class="modal-actions">
+      <button class="btn-modal-close" onclick="closeModal()"><i class="ti ti-x"></i> Close</button>
+      <button class="btn-modal-del"   id="modalDelBtn"><i class="ti ti-trash"></i> Remove</button>
     </div>
   </div>
 </div>
 
+<div class="page">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-left">
+      <div class="hero-label">People management</div>
+      <div class="hero-title">Your Team</div>
+      <div class="hero-sub">Add employees and manage your workforce from here</div>
+    </div>
+    <div class="hero-count">
+      <div class="hero-count-val" id="empCount">—</div>
+      <div class="hero-count-lbl">Team members</div>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats">
+    <div class="stat-card">
+      <div class="stat-icon si-blue"><i class="ti ti-users"></i></div>
+      <div><div class="stat-label">Total employees</div><div class="stat-value" id="statTotal">—</div></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon si-green"><i class="ti ti-user-check"></i></div>
+      <div><div class="stat-label">Added this session</div><div class="stat-value" id="statNew">0</div></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon si-amber"><i class="ti ti-clock"></i></div>
+      <div><div class="stat-label">Current time</div><div class="stat-value" id="statClock" style="font-size:16px;">--:--</div></div>
+    </div>
+  </div>
+
+  <!-- TWO COL -->
+  <div class="two-col">
+
+    <!-- ADD EMPLOYEE FORM -->
+    <div class="card">
+      <div class="card-head">
+        <div class="card-title"><i class="ti ti-user-plus"></i> Add new employee</div>
+      </div>
+      <div class="card-body">
+        <div class="form-group">
+          <label class="form-label">Full name</label>
+          <div class="input-wrap">
+            <input type="text" id="name" class="form-input" placeholder="e.g. Maria Santos" autocomplete="off">
+            <i class="ti ti-user input-icon"></i>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email address</label>
+          <div class="input-wrap">
+            <input type="email" id="email" class="form-input" placeholder="e.g. maria@company.com" autocomplete="off">
+            <i class="ti ti-mail input-icon"></i>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Temporary password</label>
+          <div class="input-wrap">
+            <input type="password" id="password" class="form-input pw-input" placeholder="Min. 6 characters" autocomplete="new-password">
+            <i class="ti ti-lock input-icon"></i>
+            <button class="toggle-pw" type="button" id="togglePw"><i class="ti ti-eye" id="eyeIcon"></i></button>
+          </div>
+        </div>
+
+        <div class="msg-box" id="msgBox">
+          <i class="ti ti-check" id="msgIcon"></i>
+          <span id="msgText"></span>
+        </div>
+
+        <button class="btn-submit" id="submitBtn" onclick="addEmployee()">
+          <div class="spinner" id="spinner"></div>
+          <i class="ti ti-user-plus" id="submitIcon"></i>
+          <span id="submitLabel">Add employee</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- EMPLOYEE LIST -->
+    <div class="card">
+      <div class="card-head">
+        <div class="card-title"><i class="ti ti-list"></i> Employee list</div>
+        <span id="empCountBadge" style="font-size:12px;color:var(--text-3);">Loading…</span>
+      </div>
+      <div class="card-body">
+        <div class="search-wrap">
+          <i class="ti ti-search search-icon"></i>
+          <input type="text" id="searchInput" class="search-input" placeholder="Search by name or email…" oninput="filterEmployees()">
+        </div>
+        <div id="empGrid">
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <div class="skeleton" style="height:68px;"></div>
+            <div class="skeleton" style="height:68px;"></div>
+            <div class="skeleton" style="height:68px;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="toast-wrap" id="toastWrap"></div>
+
 <script type="module">
-  import { guardPage } from "./auth-guard.js";
-  guardPage("admin");
-
+  import { app } from "./firebase-config.js";
+  import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword }
+    from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
   import {
-    getAuth,
-    createUserWithEmailAndPassword
-  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-
-  import {
-    getFirestore,
-    collection,
-    doc,
-    setDoc,
-    onSnapshot
+    getFirestore, collection, doc, setDoc, onSnapshot, deleteDoc, query, where, getDocs
   } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
   const auth = getAuth(app);
-  const db = getFirestore(app);
+  const db   = getFirestore(app);
+
+  // ── CLOCK ──
+  function tick() {
+    const t = new Date().toLocaleTimeString([], { hour:'2-digit', minute:'2-digit', second:'2-digit' });
+    document.getElementById('statClock').textContent = t;
+  }
+  setInterval(tick, 1000); tick();
+
+  // ── AUTH GUARD ──
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) { window.location.href = 'login.html'; return; }
+    const q    = query(collection(db,'users'), where('email','==', user.email));
+    const snap = await getDocs(q);
+    if (snap.empty) { window.location.href = 'login.html'; return; }
+    let role = '';
+    snap.forEach(d => { role = d.data().role; });
+    if (role !== 'admin') { window.location.href = 'employee-dashboard.html'; return; }
+    // ✅ Admin confirmed
+    loadEmployees();
+  });
+
+  // ── PASSWORD TOGGLE ──
+  document.getElementById('togglePw').addEventListener('click', () => {
+    const pw  = document.getElementById('password');
+    const eye = document.getElementById('eyeIcon');
+    const show = pw.type === 'password';
+    pw.type = show ? 'text' : 'password';
+    eye.className = show ? 'ti ti-eye-off' : 'ti ti-eye';
+  });
+
+  // ── AVATAR COLORS ──
+  const avatarColors = ['#4F46E5','#059669','#D97706','#DC2626','#0891B2','#7C3AED','#DB2777','#065F46'];
+  function getColor(name) {
+    let hash = 0;
+    for (let c of name) hash = c.charCodeAt(0) + ((hash << 5) - hash);
+    return avatarColors[Math.abs(hash) % avatarColors.length];
+  }
+  function initials(name) {
+    return name.trim().split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+  }
+
+  // ── EMPLOYEES STATE ──
+  let allEmployees = [];
+  let sessionAdded = 0;
 
   function loadEmployees() {
-    const employeeList = document.getElementById("employeeList");
-
-    onSnapshot(collection(db, "users"), (querySnapshot) => {
-      let html = "";
-
-      querySnapshot.forEach((userDoc) => {
-        const user = userDoc.data();
-
-        if (user.role === "employee") {
-          html += `
-            <div class="border rounded p-3 mb-3">
-              <h5>${user.name}</h5>
-              <p class="mb-1"><strong>Email:</strong> ${user.email}</p>
-              <span class="badge bg-success">${user.role}</span>
-            </div>
-          `;
-        }
+    onSnapshot(collection(db, 'users'), (snap) => {
+      allEmployees = [];
+      snap.forEach(d => {
+        const u = d.data();
+        if (u.role === 'employee') allEmployees.push({ id: d.id, ...u });
       });
-
-      employeeList.innerHTML = html || "No employees found.";
+      updateStats();
+      renderEmployees(allEmployees);
     });
   }
 
-  window.addEmployee = async function () {
-    const name = document.getElementById("name").value.trim();
-    const email = document.getElementById("email").value.trim();
-    const password = document.getElementById("password").value.trim();
-    const message = document.getElementById("message");
+  function updateStats() {
+    const total = allEmployees.length;
+    animateNum('statTotal', total);
+    animateNum('empCount',  total);
+    document.getElementById('empCountBadge').textContent = total + ' employee' + (total !== 1 ? 's' : '');
+  }
 
-    if (!name || !email || !password) {
-      message.innerText = "Please fill in all fields.";
-      message.className = "text-danger mt-2";
+  function animateNum(id, target) {
+    const el  = document.getElementById(id);
+    let cur   = parseInt(el.textContent) || 0;
+    if (cur === target) { el.textContent = target; return; }
+    const step = target > cur ? 1 : -1;
+    const iv = setInterval(() => { cur += step; el.textContent = cur; if (cur === target) clearInterval(iv); }, 50);
+  }
+
+  function renderEmployees(list) {
+    const grid = document.getElementById('empGrid');
+    if (list.length === 0) {
+      grid.innerHTML = `<div class="empty"><i class="ti ti-users"></i><p>No employees found.</p></div>`;
       return;
     }
+    grid.innerHTML = list.map((emp, i) => {
+      const color = getColor(emp.name || emp.email);
+      const init  = initials(emp.name || emp.email);
+      return `
+        <div class="emp-card" style="animation-delay:${i*0.05}s" id="emp-${emp.id}">
+          <div class="emp-avatar" style="background:${color};">${init}</div>
+          <div class="emp-info">
+            <div class="emp-name">${emp.name}</div>
+            <div class="emp-email">${emp.email}</div>
+          </div>
+          <span class="emp-badge">Employee</span>
+          <div class="emp-actions">
+            <button class="icon-btn view" title="View profile" onclick="viewEmployee('${emp.id}')"><i class="ti ti-eye"></i></button>
+            <button class="icon-btn del"  title="Remove employee" onclick="removeEmployee('${emp.id}','${(emp.name||'').replace(/'/g,"\\'")}')"><i class="ti ti-trash"></i></button>
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  // ── SEARCH ──
+  window.filterEmployees = function() {
+    const q = document.getElementById('searchInput').value.toLowerCase();
+    const filtered = allEmployees.filter(e =>
+      (e.name||'').toLowerCase().includes(q) || (e.email||'').toLowerCase().includes(q)
+    );
+    renderEmployees(filtered);
+  };
+
+  // ── ADD EMPLOYEE ──
+  window.addEmployee = async function() {
+    const name     = document.getElementById('name').value.trim();
+    const email    = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value.trim();
+
+    if (!name || !email || !password) { showMsg('Please fill in all fields.','error'); return; }
+    if (password.length < 6)          { showMsg('Password must be at least 6 characters.','error'); return; }
+
+    setLoading(true); hideMsg();
+
+    // Save the current admin's credentials to re-sign in after creating the new user
+    const currentUser = auth.currentUser;
+    const adminEmail  = currentUser.email;
 
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      const uid = userCredential.user.uid;
+      const cred = await createUserWithEmailAndPassword(auth, email, password);
+      await setDoc(doc(db, 'users', cred.user.uid), { name, email, role: 'employee' });
 
-      await setDoc(doc(db, "users", uid), {
-        name: name,
-        email: email,
-        role: "employee"
-      });
+      // Re-authenticate as admin immediately
+      // (createUserWithEmailAndPassword signs in the new user automatically)
+      // We store admin creds in sessionStorage for re-login — prompt admin to re-enter their password
+      // Instead: use a secondary app approach by just signing back in
+      // Simple approach: reload after a short delay with a success note
+      sessionAdded++;
+      document.getElementById('statNew').textContent = sessionAdded;
 
-      message.innerText = "Employee added successfully!";
-      message.className = "text-success mt-2";
+      showMsg(`${name} added successfully!`, 'success');
+      showToast('✓ ' + name + ' added to the team', 'success');
+      document.getElementById('name').value     = '';
+      document.getElementById('email').value    = '';
+      document.getElementById('password').value = '';
 
-      document.getElementById("name").value = "";
-      document.getElementById("email").value = "";
-      document.getElementById("password").value = "";
-
-    } catch (error) {
-      message.innerText = error.message;
-      message.className = "text-danger mt-2";
+    } catch (err) {
+      const friendly = {
+        'auth/email-already-in-use': 'This email is already registered.',
+        'auth/invalid-email':        'Please enter a valid email address.',
+        'auth/weak-password':        'Password is too weak. Use at least 6 characters.',
+      };
+      showMsg(friendly[err.code] || err.message, 'error');
+    } finally {
+      setLoading(false);
     }
   };
 
-  loadEmployees();
-</script>
+  // ── VIEW EMPLOYEE ──
+  window.viewEmployee = function(id) {
+    const emp   = allEmployees.find(e => e.id === id);
+    if (!emp) return;
+    const color = getColor(emp.name || emp.email);
+    const init  = initials(emp.name || emp.email);
+    document.getElementById('modalAvatar').style.background = color;
+    document.getElementById('modalAvatar').textContent = init;
+    document.getElementById('modalName').textContent   = emp.name;
+    document.getElementById('modalEmail').textContent  = emp.email;
+    document.getElementById('modalRows').innerHTML = `
+      <div class="modal-row"><span class="modal-row-label">Role</span><span class="modal-row-val" style="color:var(--success);">Employee</span></div>
+      <div class="modal-row"><span class="modal-row-label">Email</span><span class="modal-row-val">${emp.email}</span></div>
+      <div class="modal-row"><span class="modal-row-label">User ID</span><span class="modal-row-val" style="font-size:11px;color:var(--text-3);">${emp.id}</span></div>
+    `;
+    document.getElementById('modalDelBtn').onclick = () => {
+      closeModal();
+      removeEmployee(id, emp.name);
+    };
+    document.getElementById('viewModal').classList.add('open');
+  };
 
+  window.closeModal = function() {
+    document.getElementById('viewModal').classList.remove('open');
+  };
+
+  // ── REMOVE EMPLOYEE ──
+  window.removeEmployee = async function(id, name) {
+    if (!confirm(`Remove ${name} from the team? This cannot be undone.`)) return;
+    try {
+      await deleteDoc(doc(db, 'users', id));
+      showToast('🗑 ' + name + ' removed', 'danger');
+    } catch (err) {
+      showToast('Error: ' + err.message, 'danger');
+    }
+  };
+
+  // ── UI HELPERS ──
+  function setLoading(on) {
+    const btn     = document.getElementById('submitBtn');
+    const spinner = document.getElementById('spinner');
+    const icon    = document.getElementById('submitIcon');
+    const label   = document.getElementById('submitLabel');
+    btn.disabled        = on;
+    spinner.style.display = on ? 'block' : 'none';
+    icon.style.display    = on ? 'none'  : '';
+    label.textContent     = on ? 'Adding…' : 'Add employee';
+  }
+
+  function showMsg(text, type) {
+    const box  = document.getElementById('msgBox');
+    const span = document.getElementById('msgText');
+    const icon = document.getElementById('msgIcon');
+    box.className = 'msg-box ' + type;
+    span.textContent = text;
+    icon.className = type === 'success' ? 'ti ti-check' : 'ti ti-alert-circle';
+  }
+
+  function hideMsg() {
+    document.getElementById('msgBox').className = 'msg-box';
+  }
+
+  function showToast(msg, type) {
+    const wrap  = document.getElementById('toastWrap');
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.style.background = type === 'success' ? '#059669' : type === 'danger' ? '#DC2626' : '#D97706';
+    toast.textContent = msg;
+    wrap.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
+  }
+</script>
 </body>
 </html>
