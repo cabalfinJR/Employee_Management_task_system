@@ -38,15 +38,19 @@
     .hero-badge{z-index:1;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);border-radius:var(--radius);padding:10px 18px;text-align:center;flex-shrink:0;}
     .hero-badge-val{font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:700;}
     .hero-badge-lbl{font-size:11px;opacity:0.8;margin-top:2px;}
-    .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:1.25rem;}
+
+    /* ── 4 STAT CARDS ── */
+    .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:1.25rem;}
     .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1rem 1.1rem;display:flex;align-items:center;gap:12px;transition:transform 0.15s,box-shadow 0.15s;}
     .stat-card:hover{transform:translateY(-2px);box-shadow:0 4px 16px rgba(0,0,0,0.06);}
     .stat-icon{width:40px;height:40px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
     .stat-icon.blue{background:var(--brand-soft);color:var(--brand);}
     .stat-icon.amber{background:var(--warn-soft);color:var(--warn);}
     .stat-icon.green{background:var(--success-soft);color:var(--success);}
+    .stat-icon.red{background:var(--danger-soft);color:var(--danger);}
     .stat-label{font-size:12px;color:var(--text-2);margin-bottom:2px;}
     .stat-value{font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;}
+
     .two-col{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.25rem;}
     .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;}
     .card-head{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
@@ -58,6 +62,20 @@
     .form-input{width:100%;padding:9px 12px;font-size:14px;font-family:'Inter',sans-serif;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--bg);color:var(--text-1);transition:border-color 0.15s,box-shadow 0.15s;outline:none;}
     .form-input:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(79,70,229,0.1);}
     textarea.form-input{resize:vertical;min-height:80px;}
+
+    /* ── PRIORITY + DATE ROW ── */
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;}
+    .form-row .form-group{margin-bottom:0;}
+    /* make date input look consistent */
+    input[type="date"].form-input{cursor:pointer;color:var(--text-1);}
+    input[type="date"].form-input::-webkit-calendar-picker-indicator{cursor:pointer;opacity:0.6;}
+
+    /* priority color hints on the select */
+    select#priority option[value="low"]   {color:#166534;}
+    select#priority option[value="medium"]{color:#1D4ED8;}
+    select#priority option[value="high"]  {color:#D97706;}
+    select#priority option[value="urgent"]{color:#DC2626;}
+
     .form-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;}
     .btn{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:500;padding:7px 16px;border-radius:var(--radius-sm);border:none;cursor:pointer;transition:all 0.15s;}
     .btn-add{background:var(--brand);color:white;}.btn-add:hover{background:#4338CA;}
@@ -67,24 +85,42 @@
     .msg{font-size:13px;margin-top:10px;padding:8px 12px;border-radius:var(--radius-sm);}
     .msg-success{background:var(--success-soft);color:var(--success);}
     .msg-error{background:var(--danger-soft);color:var(--danger);}
+
     .filter-row{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;}
     .filter-btn{font-size:12px;font-weight:500;padding:5px 14px;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--text-2);cursor:pointer;transition:all 0.15s;}
     .filter-btn.active,.filter-btn:hover{background:var(--brand);color:white;border-color:var(--brand);}
     #taskGrid{display:flex;flex-direction:column;gap:10px;}
+
+    /* ── TASK ROWS ── */
     .task-row{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1rem 1.25rem;display:flex;align-items:flex-start;gap:14px;transition:box-shadow 0.2s,transform 0.15s;animation:slideIn 0.25s ease both;}
     @keyframes slideIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
     .task-row:hover{box-shadow:0 4px 16px rgba(79,70,229,0.08);}
     .task-row.completed{border-left:3px solid var(--success);opacity:0.85;}
     .task-row.pending{border-left:3px solid var(--brand);}
+    .task-row.overdue{border-left:3px solid var(--danger);background:#FFFAFA;}
     .task-body{flex:1;min-width:0;}
     .task-title-text{font-size:14px;font-weight:600;margin-bottom:2px;}
     .task-row.completed .task-title-text{text-decoration:line-through;color:var(--text-2);}
     .task-desc-text{font-size:13px;color:var(--text-2);margin-bottom:8px;line-height:1.5;}
-    .task-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+    .task-meta{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
     .assignee-chip{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:500;color:var(--brand);background:var(--brand-soft);padding:3px 10px;border-radius:20px;}
     .badge{font-size:11px;font-weight:500;padding:3px 10px;border-radius:20px;}
     .badge-pending{background:var(--warn-soft);color:var(--warn);}
     .badge-completed{background:var(--success-soft);color:var(--success);}
+
+    /* ── PRIORITY BADGES ── */
+    .pri{font-size:10px;font-weight:700;padding:2px 9px;border-radius:20px;text-transform:uppercase;letter-spacing:0.04em;}
+    .pri-low    {background:#F0FDF4;color:#166534;}
+    .pri-medium {background:#EFF6FF;color:#1D4ED8;}
+    .pri-high   {background:var(--warn-soft);color:var(--warn);}
+    .pri-urgent {background:var(--danger-soft);color:var(--danger);}
+
+    /* ── DUE DATE BADGES ── */
+    .due{font-size:11px;font-weight:500;display:inline-flex;align-items:center;gap:4px;padding:2px 9px;border-radius:20px;}
+    .due-ok     {background:#F0FDF4;color:#166534;}
+    .due-soon   {background:var(--warn-soft);color:var(--warn);}
+    .due-overdue{background:var(--danger-soft);color:var(--danger);}
+
     .task-actions{display:flex;gap:6px;flex-shrink:0;flex-wrap:wrap;align-items:flex-start;}
     .icon-btn{width:32px;height:32px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--bg);color:var(--text-2);display:flex;align-items:center;justify-content:center;font-size:15px;cursor:pointer;transition:all 0.15s;}
     .icon-btn:hover{transform:scale(1.1);}
@@ -115,7 +151,7 @@
     .modal-actions{display:flex;gap:8px;justify-content:flex-end;}
     .btn-modal-cancel{background:var(--bg);color:var(--text-2);border:1px solid var(--border);}
     .btn-modal-del{background:var(--danger);color:white;border:none;}
-    @media(max-width:640px){.stats{grid-template-columns:1fr 1fr;}.two-col{grid-template-columns:1fr;}}
+    @media(max-width:640px){.stats{grid-template-columns:1fr 1fr;}.two-col{grid-template-columns:1fr;}.form-row{grid-template-columns:1fr;}}
   </style>
 </head>
 <body>
@@ -153,6 +189,7 @@
     </div>
   </div>
 
+  <!-- 4 stats now (added Overdue) -->
   <div class="stats">
     <div class="stat-card">
       <div class="stat-icon blue"><i class="ti ti-clipboard-list"></i></div>
@@ -166,6 +203,10 @@
       <div class="stat-icon green"><i class="ti ti-circle-check"></i></div>
       <div><div class="stat-label">Completed</div><div class="stat-value" id="statDone">—</div></div>
     </div>
+    <div class="stat-card">
+      <div class="stat-icon red"><i class="ti ti-alert-triangle"></i></div>
+      <div><div class="stat-label">Overdue</div><div class="stat-value" id="statOverdue" style="color:var(--danger);">—</div></div>
+    </div>
   </div>
 
   <div class="two-col">
@@ -175,20 +216,41 @@
       </div>
       <div class="card-body">
         <input type="hidden" id="editTaskId">
+
         <div class="form-group">
           <label class="form-label">Task title</label>
           <input type="text" id="title" class="form-input" placeholder="e.g. Update employee records">
         </div>
+
         <div class="form-group">
           <label class="form-label">Description</label>
           <textarea id="description" class="form-input" placeholder="What needs to be done?"></textarea>
         </div>
+
         <div class="form-group">
           <label class="form-label">Assign to</label>
           <select id="assignedTo" class="form-input">
             <option value="">Select employee…</option>
           </select>
         </div>
+
+        <!-- ✅ NEW: Priority + Due Date side by side -->
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label"><i class="ti ti-flag" style="font-size:12px;vertical-align:-1px;"></i> Priority</label>
+            <select id="priority" class="form-input">
+              <option value="low">🟢 Low</option>
+              <option value="medium" selected>🔵 Medium</option>
+              <option value="high">🟠 High</option>
+              <option value="urgent">🔴 Urgent</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label"><i class="ti ti-calendar" style="font-size:12px;vertical-align:-1px;"></i> Due date</label>
+            <input type="date" id="dueDate" class="form-input">
+          </div>
+        </div>
+
         <div id="message"></div>
         <div class="form-actions">
           <button onclick="addTask()" id="addBtn" class="btn btn-add"><i class="ti ti-plus"></i> Add task</button>
@@ -221,6 +283,9 @@
         <button class="filter-btn active" onclick="setFilter('all',this)">All</button>
         <button class="filter-btn" onclick="setFilter('Pending',this)">Pending</button>
         <button class="filter-btn" onclick="setFilter('Completed',this)">Completed</button>
+        <button class="filter-btn" onclick="setFilter('overdue',this)">🔴 Overdue</button>
+        <button class="filter-btn" onclick="setFilter('urgent',this)">🔴 Urgent</button>
+        <button class="filter-btn" onclick="setFilter('high',this)">🟠 High</button>
       </div>
     </div>
     <div class="card-body">
@@ -238,7 +303,6 @@
 <div class="toast-wrap" id="toastWrap"></div>
 
 <script type="module">
-  // ── IMPORTS (all in one block, app first) ──
   import { app } from "./firebase-config.js";
   import { getAuth, onAuthStateChanged, signOut }
     from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
@@ -250,52 +314,45 @@
   const auth = getAuth(app);
   const db   = getFirestore(app);
 
-  // ── AUTH GUARD (inline — no separate file needed) ──
-  onAuthStateChanged(auth, async (user) => {
-    if (!user) { window.location.href = 'login.html'; return; }
+  // today at midnight for overdue comparison
+  const today = new Date(); today.setHours(0,0,0,0);
 
-    // Check role in Firestore
-    const q    = query(collection(db, 'users'), where('email', '==', user.email));
-    const snap = await getDocs(q);
-    if (snap.empty) { window.location.href = 'login.html'; return; }
+  // set due date min to today so admin can't pick past dates
+  document.getElementById('dueDate').min = today.toISOString().split('T')[0];
 
-    let role = '';
-    snap.forEach(d => { role = d.data().role; });
-
-    if (role !== 'admin') {
-      // Employee tried to access admin page — send them home
-      window.location.href = 'employee-dashboard.html';
-      return;
-    }
-
-    // ✅ Confirmed admin — boot everything up
-    initDashboard();
-  });
-
-  // ── CLOCK (starts immediately, no auth needed) ──
+  // ── CLOCK ──
   function tick() {
     document.getElementById('navClock').textContent =
-      new Date().toLocaleTimeString([], { hour:'2-digit', minute:'2-digit', second:'2-digit' });
+      new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',second:'2-digit'});
   }
-  setInterval(tick, 1000); tick();
+  setInterval(tick,1000); tick();
 
   // ── GREETING ──
   const h = new Date().getHours();
-  const greet = h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening';
-  document.getElementById('heroGreet').textContent = greet + ', Administrator 👋';
+  document.getElementById('heroGreet').textContent =
+    (h<12?'Good morning':h<17?'Good afternoon':'Good evening') + ', Administrator 👋';
 
-  // ── MAIN INIT (only after auth confirmed) ──
+  // ── AUTH GUARD ──
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) { window.location.href='login.html'; return; }
+    const q = query(collection(db,'users'), where('email','==',user.email));
+    const snap = await getDocs(q);
+    if (snap.empty) { window.location.href='login.html'; return; }
+    let role=''; snap.forEach(d=>{role=d.data().role;});
+    if (role!=='admin') { window.location.href='employee-dashboard.html'; return; }
+    initDashboard();
+  });
+
   function initDashboard() {
     loadEmployeesDropdown();
     loadTasks();
   }
 
-  let currentFilter = 'all';
-  let allTasks = [];
+  let currentFilter='all', allTasks=[];
 
-  window.setFilter = function(f, btn) {
-    currentFilter = f;
-    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  window.setFilter = function(f,btn) {
+    currentFilter=f;
+    document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
     btn.classList.add('active');
     renderTasks();
   };
@@ -303,188 +360,256 @@
   async function loadEmployeesDropdown() {
     const sel = document.getElementById('assignedTo');
     sel.innerHTML = '<option value="">Select employee…</option>';
-    const snap = await getDocs(collection(db, 'users'));
-    snap.forEach(d => {
-      const u = d.data();
-      if (u.role === 'employee') {
-        sel.innerHTML += `<option value="${u.email}">${u.name} (${u.email})</option>`;
-      }
+    const snap = await getDocs(collection(db,'users'));
+    snap.forEach(d=>{
+      const u=d.data();
+      if(u.role==='employee') sel.innerHTML+=`<option value="${u.email}">${u.name} (${u.email})</option>`;
     });
   }
 
   function loadTasks() {
-    onSnapshot(collection(db, 'tasks'), (snap) => {
-      allTasks = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    onSnapshot(collection(db,'tasks'),(snap)=>{
+      allTasks = snap.docs.map(d=>({id:d.id,...d.data()}));
       updateStats();
       renderTasks();
-      snap.docChanges().forEach(change => {
-        const t = change.doc.data();
-        if (change.type === 'modified') pushActivity(t.assignedTo, `updated task <strong>${t.title}</strong> → ${t.status}`);
-        if (change.type === 'added' && allTasks.length > 1) pushActivity('Admin', `assigned <strong>${t.title}</strong> to ${t.assignedTo}`);
-        if (change.type === 'removed') pushActivity('Admin', `deleted task <strong>${t.title}</strong>`);
+      snap.docChanges().forEach(change=>{
+        const t=change.doc.data();
+        if(change.type==='modified') pushActivity(t.assignedTo,`updated <strong>${t.title}</strong> → ${t.status}`);
+        if(change.type==='added'&&allTasks.length>1) pushActivity('Admin',`assigned <strong>${t.title}</strong> to ${t.assignedTo}`);
+        if(change.type==='removed') pushActivity('Admin',`deleted <strong>${t.title}</strong>`);
       });
     });
   }
 
-  function updateStats() {
-    const total   = allTasks.length;
-    const done    = allTasks.filter(t => t.status === 'Completed').length;
-    const pending = allTasks.filter(t => t.status === 'Pending').length;
-    animateNum('statTotal', total);
-    animateNum('statPending', pending);
-    animateNum('statDone', done);
-    const rate = total > 0 ? Math.round((done / total) * 100) : 0;
-    document.getElementById('heroProgress').textContent = rate + '%';
+  // ── OVERDUE HELPERS ──
+  function isOverdue(task) {
+    if (!task.dueDate || task.status==='Completed') return false;
+    const due = new Date(task.dueDate); due.setHours(0,0,0,0);
+    return due < today;
+  }
+  function isDueSoon(task) {
+    if (!task.dueDate || task.status==='Completed') return false;
+    const due = new Date(task.dueDate); due.setHours(0,0,0,0);
+    const diff = (due - today) / (1000*60*60*24);
+    return diff >= 0 && diff <= 2;
+  }
+  function formatDate(str) {
+    if (!str) return '';
+    return new Date(str).toLocaleDateString([],{month:'short',day:'numeric',year:'numeric'});
+  }
+  function dueBadge(task) {
+    if (!task.dueDate) return '';
+    if (isOverdue(task))  return `<span class="due due-overdue"><i class="ti ti-alert-circle" style="font-size:11px;"></i> Overdue · ${formatDate(task.dueDate)}</span>`;
+    if (isDueSoon(task))  return `<span class="due due-soon"><i class="ti ti-clock" style="font-size:11px;"></i> Due soon · ${formatDate(task.dueDate)}</span>`;
+    return `<span class="due due-ok"><i class="ti ti-calendar" style="font-size:11px;"></i> Due ${formatDate(task.dueDate)}</span>`;
+  }
+  function priBadge(p) {
+    const map  ={low:'pri-low',medium:'pri-medium',high:'pri-high',urgent:'pri-urgent'};
+    const label={low:'Low',medium:'Medium',high:'High',urgent:'Urgent'};
+    const icon ={low:'🟢',medium:'🔵',high:'🟠',urgent:'🔴'};
+    return `<span class="pri ${map[p]||'pri-medium'}">${icon[p]||'🔵'} ${label[p]||'Medium'}</span>`;
   }
 
-  function animateNum(id, target) {
-    const el  = document.getElementById(id);
-    let cur   = parseInt(el.textContent) || 0;
-    if (cur === target) { el.textContent = target; return; }
-    const step = target > cur ? 1 : -1;
-    const iv = setInterval(() => { cur += step; el.textContent = cur; if (cur === target) clearInterval(iv); }, 50);
+  function updateStats() {
+    const total   = allTasks.length;
+    const done    = allTasks.filter(t=>t.status==='Completed').length;
+    const pending = allTasks.filter(t=>t.status==='Pending').length;
+    const overdue = allTasks.filter(t=>isOverdue(t)).length;
+    animateNum('statTotal',   total);
+    animateNum('statPending', pending);
+    animateNum('statDone',    done);
+    animateNum('statOverdue', overdue);
+    document.getElementById('heroProgress').textContent =
+      (total>0?Math.round((done/total)*100):0)+'%';
+  }
+
+  function animateNum(id,target) {
+    const el=document.getElementById(id);
+    let cur=parseInt(el.textContent)||0;
+    if(cur===target){el.textContent=target;return;}
+    const step=target>cur?1:-1;
+    const iv=setInterval(()=>{cur+=step;el.textContent=cur;if(cur===target)clearInterval(iv);},50);
   }
 
   function renderTasks() {
-    const grid = document.getElementById('taskGrid');
-    const filtered = currentFilter === 'all' ? allTasks : allTasks.filter(t => t.status === currentFilter);
-    if (filtered.length === 0) {
-      grid.innerHTML = `<div class="empty"><i class="ti ti-clipboard-x"></i><p>No ${currentFilter === 'all' ? '' : currentFilter.toLowerCase() + ' '}tasks found.</p></div>`;
+    const grid=document.getElementById('taskGrid');
+    let filtered=allTasks;
+    if     (currentFilter==='Pending')   filtered=allTasks.filter(t=>t.status==='Pending');
+    else if(currentFilter==='Completed') filtered=allTasks.filter(t=>t.status==='Completed');
+    else if(currentFilter==='overdue')   filtered=allTasks.filter(t=>isOverdue(t));
+    else if(currentFilter==='urgent')    filtered=allTasks.filter(t=>t.priority==='urgent');
+    else if(currentFilter==='high')      filtered=allTasks.filter(t=>t.priority==='high');
+
+    if(filtered.length===0){
+      grid.innerHTML=`<div class="empty"><i class="ti ti-clipboard-x"></i><p>No tasks found.</p></div>`;
       return;
     }
-    const sorted = [...filtered].sort((a,b) => a.status === b.status ? 0 : a.status === 'Pending' ? -1 : 1);
-    grid.innerHTML = sorted.map((task, i) => {
-      const done = task.status === 'Completed';
+
+    // sort: overdue first → urgent → high → medium → low → completed last
+    const priOrder={urgent:0,high:1,medium:2,low:3};
+    const sorted=[...filtered].sort((a,b)=>{
+      if(a.status==='Completed'&&b.status!=='Completed') return 1;
+      if(b.status==='Completed'&&a.status!=='Completed') return -1;
+      if(isOverdue(a)&&!isOverdue(b)) return -1;
+      if(isOverdue(b)&&!isOverdue(a)) return 1;
+      return (priOrder[a.priority]??2)-(priOrder[b.priority]??2);
+    });
+
+    grid.innerHTML=sorted.map((task,i)=>{
+      const done=task.status==='Completed';
+      const over=isOverdue(task);
+      const rowCls=done?'completed':over?'overdue':'pending';
       return `
-        <div class="task-row ${done ? 'completed' : 'pending'}" style="animation-delay:${i*0.04}s">
+        <div class="task-row ${rowCls}" style="animation-delay:${i*0.04}s">
           <div class="task-body">
-            <div class="task-title-text">${task.title || 'Untitled'}</div>
-            <div class="task-desc-text">${task.description || ''}</div>
+            <div class="task-title-text">${task.title||'Untitled'}</div>
+            <div class="task-desc-text">${task.description||''}</div>
             <div class="task-meta">
               <span class="assignee-chip"><i class="ti ti-user" style="font-size:11px;"></i>${task.assignedTo}</span>
-              <span class="badge ${done ? 'badge-completed' : 'badge-pending'}">${task.status}</span>
+              <span class="badge ${done?'badge-completed':'badge-pending'}">${task.status}</span>
+              ${priBadge(task.priority||'medium')}
+              ${dueBadge(task)}
             </div>
           </div>
           <div class="task-actions">
-            <button class="icon-btn edit" title="Edit" onclick="editTask('${task.id}','${esc(task.title)}','${esc(task.description)}','${esc(task.assignedTo)}')"><i class="ti ti-pencil"></i></button>
+            <button class="icon-btn edit" title="Edit"
+              onclick="editTask('${task.id}','${esc(task.title)}','${esc(task.description)}','${esc(task.assignedTo)}','${task.priority||'medium'}','${task.dueDate||''}')">
+              <i class="ti ti-pencil"></i>
+            </button>
             ${done
-              ? `<button class="icon-btn undo" title="Mark Pending" onclick="markPending('${task.id}')"><i class="ti ti-rotate-left"></i></button>`
-              : `<button class="icon-btn done" title="Mark Completed" onclick="markCompleted('${task.id}')"><i class="ti ti-check"></i></button>`}
-            <button class="icon-btn del" title="Delete" onclick="confirmDelete('${task.id}','${esc(task.title)}')"><i class="ti ti-trash"></i></button>
+              ?`<button class="icon-btn undo" title="Mark Pending" onclick="markPending('${task.id}')"><i class="ti ti-rotate-left"></i></button>`
+              :`<button class="icon-btn done" title="Mark Completed" onclick="markCompleted('${task.id}')"><i class="ti ti-check"></i></button>`}
+            <button class="icon-btn del" title="Delete" onclick="confirmDelete('${task.id}')">
+              <i class="ti ti-trash"></i>
+            </button>
           </div>
         </div>`;
     }).join('');
   }
 
-  function esc(s) { return (s||'').replace(/'/g,"\\'").replace(/"/g,'&quot;'); }
+  function esc(s){return(s||'').replace(/'/g,"\\'").replace(/"/g,'&quot;');}
 
+  // ── ADD TASK ──
   window.addTask = async function() {
-    const title = document.getElementById('title').value.trim();
+    const title       = document.getElementById('title').value.trim();
     const description = document.getElementById('description').value.trim();
-    const assignedTo = document.getElementById('assignedTo').value.trim();
-    if (!title || !description || !assignedTo) { showMsg('Please fill in all fields.','error'); return; }
-    await addDoc(collection(db,'tasks'), { title, description, assignedTo, status:'Pending' });
+    const assignedTo  = document.getElementById('assignedTo').value.trim();
+    const priority    = document.getElementById('priority').value;
+    const dueDate     = document.getElementById('dueDate').value;  // "YYYY-MM-DD" or ""
+    if(!title||!description||!assignedTo){showMsg('Please fill in all fields.','error');return;}
+    await addDoc(collection(db,'tasks'),{
+      title, description, assignedTo,
+      status:'Pending',
+      priority,
+      dueDate   // saved as string "YYYY-MM-DD", empty string if not set
+    });
     showMsg('Task added successfully!','success');
     showToast('✓ Task assigned to '+assignedTo,'success');
     clearForm();
   };
 
-  window.editTask = function(id, title, description, assignedTo) {
+  // ── EDIT TASK (now receives priority + dueDate) ──
+  window.editTask = function(id,title,description,assignedTo,priority,dueDate) {
     document.getElementById('editTaskId').value  = id;
     document.getElementById('title').value       = title;
     document.getElementById('description').value = description;
     document.getElementById('assignedTo').value  = assignedTo;
-    document.getElementById('formTitle').innerHTML = '<i class="ti ti-pencil" style="color:var(--warn);"></i> Edit task';
+    document.getElementById('priority').value    = priority  || 'medium';
+    document.getElementById('dueDate').value     = dueDate   || '';
+    document.getElementById('formTitle').innerHTML='<i class="ti ti-pencil" style="color:var(--warn);"></i> Edit task';
     document.getElementById('addBtn').classList.add('d-none');
     document.getElementById('saveBtn').classList.remove('d-none');
     document.getElementById('cancelBtn').classList.remove('d-none');
-    window.scrollTo({ top:0, behavior:'smooth' });
+    window.scrollTo({top:0,behavior:'smooth'});
   };
 
+  // ── SAVE EDIT ──
   window.saveEdit = async function() {
-    const id = document.getElementById('editTaskId').value;
-    const title = document.getElementById('title').value.trim();
+    const id          = document.getElementById('editTaskId').value;
+    const title       = document.getElementById('title').value.trim();
     const description = document.getElementById('description').value.trim();
-    const assignedTo = document.getElementById('assignedTo').value.trim();
-    if (!title || !description || !assignedTo) { showMsg('Please fill in all fields.','error'); return; }
-    await updateDoc(doc(db,'tasks',id), { title, description, assignedTo });
-    showMsg('Task updated!','success');
+    const assignedTo  = document.getElementById('assignedTo').value.trim();
+    const priority    = document.getElementById('priority').value;
+    const dueDate     = document.getElementById('dueDate').value;
+    if(!title||!description||!assignedTo){showMsg('Please fill in all fields.','error');return;}
+    await updateDoc(doc(db,'tasks',id),{title,description,assignedTo,priority,dueDate});
+    showMsg('Task updated successfully!','success');
     showToast('✎ Task updated','warn');
     clearForm();
   };
 
-  window.cancelEdit = function() { clearForm(); };
+  window.cancelEdit=function(){clearForm();};
 
-  function clearForm() {
-    ['editTaskId','title','description'].forEach(id => document.getElementById(id).value = '');
-    document.getElementById('assignedTo').value = '';
-    document.getElementById('formTitle').innerHTML = '<i class="ti ti-plus" style="color:var(--brand);"></i> Add new task';
+  function clearForm(){
+    ['editTaskId','title','description'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('assignedTo').value='';
+    document.getElementById('priority').value='medium';
+    document.getElementById('dueDate').value='';
+    document.getElementById('formTitle').innerHTML='<i class="ti ti-plus" style="color:var(--brand);"></i> Add new task';
     document.getElementById('addBtn').classList.remove('d-none');
     document.getElementById('saveBtn').classList.add('d-none');
     document.getElementById('cancelBtn').classList.add('d-none');
-    document.getElementById('message').innerHTML = '';
+    document.getElementById('message').innerHTML='';
   }
 
-  window.markCompleted = async function(id) {
-    await updateDoc(doc(db,'tasks',id), { status:'Completed' });
+  window.markCompleted=async function(id){
+    await updateDoc(doc(db,'tasks',id),{status:'Completed'});
     showToast('✓ Marked as completed','success');
   };
-  window.markPending = async function(id) {
-    await updateDoc(doc(db,'tasks',id), { status:'Pending' });
+  window.markPending=async function(id){
+    await updateDoc(doc(db,'tasks',id),{status:'Pending'});
     showToast('↩ Moved back to pending','warn');
   };
 
-  let pendingDeleteId = null;
-  window.confirmDelete = function(id) {
-    pendingDeleteId = id;
+  let pendingDeleteId=null;
+  window.confirmDelete=function(id){
+    pendingDeleteId=id;
     document.getElementById('deleteModal').classList.add('open');
-    document.getElementById('confirmDelBtn').onclick = async () => {
+    document.getElementById('confirmDelBtn').onclick=async()=>{
       await deleteDoc(doc(db,'tasks',pendingDeleteId));
       showToast('🗑 Task deleted','danger');
       closeModal();
     };
   };
-  window.closeModal = function() {
+  window.closeModal=function(){
     document.getElementById('deleteModal').classList.remove('open');
-    pendingDeleteId = null;
+    pendingDeleteId=null;
   };
 
-  const colors = ['#4F46E5','#059669','#D97706','#DC2626','#0891B2'];
-  let colorIdx = 0;
-  function pushActivity(actor, msg) {
-    const feed  = document.getElementById('activityFeed');
-    const color = colors[colorIdx++ % colors.length];
-    const init  = (actor||'??').slice(0,2).toUpperCase();
-    const ts    = new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
-    const item  = document.createElement('div');
-    item.className = 'activity-item';
-    item.style.cssText = 'opacity:0;transition:opacity 0.4s;';
-    item.innerHTML = `<div class="act-icon" style="background:${color}22;color:${color};">${init}</div><div><div class="act-msg">${msg}</div><div class="act-ts">${ts}</div></div>`;
+  const colors=['#4F46E5','#059669','#D97706','#DC2626','#0891B2'];
+  let colorIdx=0;
+  function pushActivity(actor,msg){
+    const feed=document.getElementById('activityFeed');
+    const color=colors[colorIdx++%colors.length];
+    const init=(actor||'??').slice(0,2).toUpperCase();
+    const ts=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+    const item=document.createElement('div');
+    item.className='activity-item';
+    item.style.cssText='opacity:0;transition:opacity 0.4s;';
+    item.innerHTML=`<div class="act-icon" style="background:${color}22;color:${color};">${init}</div><div><div class="act-msg">${msg}</div><div class="act-ts">${ts}</div></div>`;
     feed.prepend(item);
-    setTimeout(() => item.style.opacity = '1', 30);
-    while (feed.children.length > 6) feed.removeChild(feed.lastChild);
+    setTimeout(()=>item.style.opacity='1',30);
+    while(feed.children.length>6)feed.removeChild(feed.lastChild);
   }
 
-  function showToast(msg, type) {
-    const wrap  = document.getElementById('toastWrap');
-    const toast = document.createElement('div');
-    toast.className = 'toast';
-    toast.style.background = type==='success'?'#059669':type==='danger'?'#DC2626':'#D97706';
-    toast.textContent = msg;
+  function showToast(msg,type){
+    const wrap=document.getElementById('toastWrap');
+    const toast=document.createElement('div');
+    toast.className='toast';
+    toast.style.background=type==='success'?'#059669':type==='danger'?'#DC2626':'#D97706';
+    toast.textContent=msg;
     wrap.appendChild(toast);
-    setTimeout(() => toast.remove(), 3000);
+    setTimeout(()=>toast.remove(),3000);
   }
 
-  function showMsg(text, type) {
-    const el = document.getElementById('message');
-    el.className = 'msg '+(type==='success'?'msg-success':'msg-error');
-    el.textContent = text;
-    setTimeout(() => { el.textContent=''; el.className=''; }, 4000);
+  function showMsg(text,type){
+    const el=document.getElementById('message');
+    el.className='msg '+(type==='success'?'msg-success':'msg-error');
+    el.textContent=text;
+    setTimeout(()=>{el.textContent='';el.className='';},4000);
   }
 
-  window.logout = function() {
-    signOut(auth).then(() => window.location.href = 'login.html');
-  };
+  window.logout=function(){signOut(auth).then(()=>window.location.href='login.html');};
 </script>
 </body>
 </html>
