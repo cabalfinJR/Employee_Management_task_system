@@ -19,37 +19,27 @@
       --radius:12px;--radius-sm:8px;
     }
     body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text-1);min-height:100vh;}
-
-    /* NAV */
     nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 1.5rem;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
     .nav-brand{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:17px;color:var(--brand);display:flex;align-items:center;gap:8px;}
     .nav-right{display:flex;align-items:center;gap:12px;}
     .nav-clock{font-size:13px;font-weight:500;color:var(--text-2);background:var(--bg);padding:4px 12px;border-radius:20px;border:1px solid var(--border);}
-
-    /* notification bell */
     .bell-btn{position:relative;width:36px;height:36px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--bg);color:var(--text-2);display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;transition:all 0.15s;}
     .bell-btn:hover{color:var(--brand);border-color:var(--brand);background:var(--brand-soft);}
     .bell-dot{position:absolute;top:6px;right:6px;width:8px;height:8px;border-radius:50%;background:var(--danger);border:2px solid var(--surface);display:none;animation:pulse 2s infinite;}
     @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.5;}}
-
     .btn-logout{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:500;color:var(--text-2);background:transparent;border:1px solid var(--border);border-radius:var(--radius-sm);padding:6px 14px;cursor:pointer;transition:all 0.15s;}
     .btn-logout:hover{background:var(--bg);color:var(--danger);border-color:var(--danger);}
-
     .page{max-width:860px;margin:0 auto;padding:2rem 1.25rem 4rem;}
 
-    /* ── ALERT BANNERS ── */
+    /* ALERTS */
     .alert-stack{display:flex;flex-direction:column;gap:8px;margin-bottom:1.25rem;}
-
     .alert{border-radius:var(--radius);padding:14px 18px;display:flex;align-items:flex-start;gap:12px;animation:slideDown 0.4s ease both;}
     @keyframes slideDown{from{opacity:0;transform:translateY(-10px);}to{opacity:1;transform:translateY(0);}}
-
     .alert-danger{background:#FFF5F5;border:1px solid #FECACA;}
     .alert-warn  {background:#FFFBEB;border:1px solid #FDE68A;}
-
     .alert-icon{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
     .alert-danger .alert-icon{background:var(--danger-soft);color:var(--danger);}
     .alert-warn  .alert-icon{background:var(--warn-soft);color:var(--warn);}
-
     .alert-body{flex:1;}
     .alert-title{font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:700;margin-bottom:4px;}
     .alert-danger .alert-title{color:var(--danger);}
@@ -73,7 +63,7 @@
     .hero-avatar{width:56px;height:56px;border-radius:50%;background:rgba(255,255,255,0.18);border:2px solid rgba(255,255,255,0.35);display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:700;flex-shrink:0;z-index:1;}
 
     /* STATS */
-    .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:1.25rem;}
+    .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:1.25rem;}
     .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1rem 1.1rem;display:flex;align-items:center;gap:12px;transition:transform 0.15s;}
     .stat-card:hover{transform:translateY(-2px);}
     .stat-icon{width:40px;height:40px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
@@ -92,14 +82,14 @@
 
     /* TASK CARDS */
     #taskList{display:flex;flex-direction:column;gap:10px;}
-    .task-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1rem 1.25rem;display:flex;align-items:flex-start;gap:14px;transition:box-shadow 0.2s,transform 0.15s;animation:slideIn 0.3s ease both;}
+    .task-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1rem 1.25rem;transition:box-shadow 0.2s,transform 0.15s;animation:slideIn 0.3s ease both;}
     @keyframes slideIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
     .task-card:hover{box-shadow:0 4px 16px rgba(79,70,229,0.08);transform:translateY(-1px);}
-    .task-card.completed{opacity:0.7;border-left:3px solid var(--success);}
+    .task-card.completed{opacity:0.75;border-left:3px solid var(--success);}
     .task-card.pending  {border-left:3px solid var(--brand);}
     .task-card.overdue  {border-left:3px solid var(--danger);background:#FFFAFA;}
     .task-card.due-soon {border-left:3px solid var(--warn);background:#FFFDF0;}
-
+    .task-top{display:flex;align-items:flex-start;gap:14px;}
     .task-check{width:22px;height:22px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.2s;}
     .task-check.done{background:var(--success);border-color:var(--success);color:white;}
     .task-check i{font-size:12px;}
@@ -108,12 +98,9 @@
     .task-card.completed .task-title{text-decoration:line-through;color:var(--text-2);}
     .task-desc{font-size:13px;color:var(--text-2);line-height:1.5;margin-bottom:8px;}
     .task-footer{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
-
     .badge{font-size:11px;font-weight:500;padding:3px 10px;border-radius:20px;}
     .badge-pending  {background:var(--brand-soft);color:var(--brand);}
     .badge-completed{background:var(--success-soft);color:var(--success);}
-
-    /* priority + due badges */
     .pri{font-size:10px;font-weight:700;padding:2px 9px;border-radius:20px;text-transform:uppercase;letter-spacing:0.04em;}
     .pri-low    {background:#F0FDF4;color:#166534;}
     .pri-medium {background:#EFF6FF;color:#1D4ED8;}
@@ -123,18 +110,63 @@
     .due-ok     {background:#F0FDF4;color:#166534;}
     .due-soon   {background:var(--warn-soft);color:var(--warn);}
     .due-overdue{background:var(--danger-soft);color:var(--danger);}
-
     .task-action{margin-left:auto;font-size:12px;font-weight:500;padding:5px 14px;border-radius:var(--radius-sm);border:none;cursor:pointer;transition:all 0.15s;}
     .btn-complete{background:var(--success-soft);color:var(--success);}
     .btn-complete:hover{background:var(--success);color:white;}
     .btn-pending {background:var(--bg);color:var(--text-2);border:1px solid var(--border);}
     .btn-pending:hover{background:var(--warn-soft);color:var(--warn);border-color:var(--warn);}
 
+    /* ── FILE UPLOAD SECTION (per task) ── */
+    .task-files{margin-top:12px;border-top:1px solid var(--border);padding-top:12px;}
+    .files-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+    .files-label{font-size:12px;font-weight:600;color:var(--text-2);display:flex;align-items:center;gap:6px;text-transform:uppercase;letter-spacing:0.04em;}
+    .files-label i{color:var(--brand);font-size:14px;}
+
+    /* drop zone */
+    .drop-zone{border:2px dashed var(--border);border-radius:var(--radius-sm);padding:18px;text-align:center;cursor:pointer;transition:all 0.2s;background:var(--bg);position:relative;margin-bottom:10px;}
+    .drop-zone:hover,.drop-zone.drag-over{border-color:var(--brand);background:var(--brand-soft);}
+    .drop-zone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+    .drop-zone-icon{font-size:28px;color:var(--text-3);margin-bottom:6px;display:block;}
+    .drop-zone:hover .drop-zone-icon,.drop-zone.drag-over .drop-zone-icon{color:var(--brand);}
+    .drop-zone-text{font-size:13px;color:var(--text-2);}
+    .drop-zone-text strong{color:var(--brand);}
+    .drop-zone-hint{font-size:11px;color:var(--text-3);margin-top:3px;}
+
+    /* upload progress */
+    .upload-list{display:flex;flex-direction:column;gap:8px;margin-bottom:10px;}
+    .upload-item{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;}
+    .upload-item-top{display:flex;align-items:center;gap:10px;margin-bottom:6px;}
+    .file-type-icon{font-size:20px;flex-shrink:0;}
+    .upload-item-name{font-size:13px;font-weight:500;color:var(--text-1);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+    .upload-item-size{font-size:11px;color:var(--text-3);flex-shrink:0;}
+    .upload-cancel{background:none;border:none;cursor:pointer;color:var(--text-3);font-size:16px;padding:0;flex-shrink:0;transition:color 0.15s;}
+    .upload-cancel:hover{color:var(--danger);}
+    .progress-bar{height:4px;background:var(--border);border-radius:2px;overflow:hidden;}
+    .progress-fill{height:100%;background:var(--brand);border-radius:2px;transition:width 0.3s ease;width:0%;}
+    .progress-fill.done{background:var(--success);}
+    .progress-fill.error{background:var(--danger);}
+    .upload-status{font-size:11px;color:var(--text-3);margin-top:4px;}
+
+    /* uploaded files list */
+    .file-list{display:flex;flex-direction:column;gap:6px;}
+    .file-item{display:flex;align-items:center;gap:10px;padding:8px 10px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);transition:all 0.15s;}
+    .file-item:hover{border-color:var(--brand-mid);background:var(--brand-soft);}
+    .file-item-icon{font-size:18px;flex-shrink:0;color:var(--brand);}
+    .file-item-info{flex:1;min-width:0;}
+    .file-item-name{font-size:13px;font-weight:500;color:var(--text-1);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+    .file-item-meta{font-size:11px;color:var(--text-3);margin-top:1px;}
+    .file-item-actions{display:flex;gap:6px;flex-shrink:0;}
+    .file-btn{width:28px;height:28px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface);color:var(--text-2);display:flex;align-items:center;justify-content:center;font-size:14px;cursor:pointer;transition:all 0.15s;text-decoration:none;}
+    .file-btn:hover{transform:scale(1.1);}
+    .file-btn.download:hover{background:var(--success-soft);color:var(--success);border-color:var(--success);}
+    .file-btn.delete:hover{background:var(--danger-soft);color:var(--danger);border-color:var(--danger);}
+    .no-files{font-size:12px;color:var(--text-3);text-align:center;padding:8px 0;}
+
     .empty{text-align:center;padding:3rem 1rem;color:var(--text-3);}
     .empty i{font-size:40px;margin-bottom:12px;display:block;}
     .empty p{font-size:14px;}
     .toast-wrap{position:fixed;bottom:24px;right:24px;z-index:999;display:flex;flex-direction:column;gap:8px;}
-    .toast{background:var(--text-1);color:white;font-size:13px;font-weight:500;padding:10px 16px;border-radius:var(--radius-sm);display:flex;align-items:center;gap:8px;animation:toastIn 0.3s ease;}
+    .toast{color:white;font-size:13px;font-weight:500;padding:10px 16px;border-radius:var(--radius-sm);display:flex;align-items:center;gap:8px;animation:toastIn 0.3s ease;}
     @keyframes toastIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
     .skeleton{background:linear-gradient(90deg,var(--border) 25%,var(--bg) 50%,var(--border) 75%);background-size:200% 100%;animation:shimmer 1.2s infinite;border-radius:var(--radius-sm);}
     @keyframes shimmer{from{background-position:200% 0;}to{background-position:-200% 0;}}
@@ -147,7 +179,6 @@
   <div class="nav-brand"><i class="ti ti-layout-dashboard"></i> My Dashboard</div>
   <div class="nav-right">
     <span class="nav-clock" id="navClock">--:--:--</span>
-    <!-- notification bell -->
     <button class="bell-btn" id="bellBtn" title="Notifications" onclick="scrollToAlerts()">
       <i class="ti ti-bell"></i>
       <span class="bell-dot" id="bellDot"></span>
@@ -157,11 +188,8 @@
 </nav>
 
 <div class="page">
-
-  <!-- ── ALERT BANNERS (injected by JS) ── -->
   <div class="alert-stack" id="alertStack"></div>
 
-  <!-- HERO -->
   <div class="hero">
     <div class="hero-left">
       <div class="hero-label">Welcome back</div>
@@ -171,8 +199,7 @@
     <div class="hero-avatar" id="heroAvatar">??</div>
   </div>
 
-  <!-- STATS — now 4 cards -->
-  <div class="stats" style="grid-template-columns:repeat(4,1fr);">
+  <div class="stats">
     <div class="stat-card">
       <div class="stat-icon blue"><i class="ti ti-clipboard-list"></i></div>
       <div><div class="stat-label">Total</div><div class="stat-value" id="statTotal">—</div></div>
@@ -202,9 +229,9 @@
 
   <div id="taskList">
     <div style="display:flex;flex-direction:column;gap:10px;">
-      <div class="skeleton" style="height:90px;"></div>
-      <div class="skeleton" style="height:90px;"></div>
-      <div class="skeleton" style="height:90px;"></div>
+      <div class="skeleton" style="height:120px;"></div>
+      <div class="skeleton" style="height:120px;"></div>
+      <div class="skeleton" style="height:120px;"></div>
     </div>
   </div>
 </div>
@@ -217,15 +244,25 @@
     from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
   import {
     getFirestore, collection, query, where,
-    onSnapshot, doc, updateDoc, getDocs
+    onSnapshot, doc, updateDoc, getDocs,
+    addDoc, deleteDoc, serverTimestamp
   } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import {
+    getStorage, ref, uploadBytesResumable,
+    getDownloadURL, deleteObject, listAll
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
-  const auth = getAuth(app);
-  const db   = getFirestore(app);
+  const auth    = getAuth(app);
+  const db      = getFirestore(app);
+  const storage = getStorage(app);
 
-  // today and tomorrow at midnight
+  const MAX_FILE_SIZE = 1 * 1024 * 1024 * 1024; // 1 GB
+
   const today    = new Date(); today.setHours(0,0,0,0);
   const tomorrow = new Date(today); tomorrow.setDate(tomorrow.getDate()+1);
+
+  let currentUserEmail = '';
+  let currentUserId    = '';
 
   // ── CLOCK ──
   function tick(){
@@ -246,8 +283,11 @@
     let role=''; snap.forEach(d=>{role=d.data().role;});
     if(role!=='employee'){window.location.href='admin-dashboard.html';return;}
 
-    const emailPart  = user.email.split('@')[0];
-    const name       = emailPart.charAt(0).toUpperCase()+emailPart.slice(1);
+    currentUserEmail = user.email;
+    currentUserId    = user.uid;
+
+    const emailPart=user.email.split('@')[0];
+    const name=emailPart.charAt(0).toUpperCase()+emailPart.slice(1);
     document.getElementById('heroName').textContent   = greet+', '+name+' 👋';
     document.getElementById('heroSub').textContent    = user.email;
     document.getElementById('heroAvatar').textContent = name.slice(0,2).toUpperCase();
@@ -276,11 +316,17 @@
     if(!str) return '';
     return new Date(str).toLocaleDateString([],{month:'short',day:'numeric',year:'numeric'});
   }
+  function formatBytes(bytes){
+    if(bytes<1024) return bytes+'B';
+    if(bytes<1024*1024) return (bytes/1024).toFixed(1)+'KB';
+    if(bytes<1024*1024*1024) return (bytes/(1024*1024)).toFixed(1)+'MB';
+    return (bytes/(1024*1024*1024)).toFixed(2)+'GB';
+  }
   function dueBadge(task){
     if(!task.dueDate) return '';
-    if(isOverdue(task))   return `<span class="due due-overdue"><i class="ti ti-alert-circle" style="font-size:11px;"></i> Overdue · ${formatDate(task.dueDate)}</span>`;
+    if(isOverdue(task))    return `<span class="due due-overdue"><i class="ti ti-alert-circle" style="font-size:11px;"></i> Overdue · ${formatDate(task.dueDate)}</span>`;
     if(isDueTomorrow(task))return `<span class="due due-soon"><i class="ti ti-clock" style="font-size:11px;"></i> Due tomorrow!</span>`;
-    if(isDueSoon(task))   return `<span class="due due-soon"><i class="ti ti-clock" style="font-size:11px;"></i> Due soon · ${formatDate(task.dueDate)}</span>`;
+    if(isDueSoon(task))    return `<span class="due due-soon"><i class="ti ti-clock" style="font-size:11px;"></i> Due soon · ${formatDate(task.dueDate)}</span>`;
     return `<span class="due due-ok"><i class="ti ti-calendar" style="font-size:11px;"></i> Due ${formatDate(task.dueDate)}</span>`;
   }
   function priBadge(p){
@@ -290,18 +336,32 @@
     return `<span class="pri ${map[p]||'pri-medium'}">${icon[p]||'🔵'} ${label[p]||'Medium'}</span>`;
   }
 
-  // ── ALERT BANNERS ──
+  // ── FILE TYPE ICON ──
+  function fileIcon(name){
+    const ext=(name.split('.').pop()||'').toLowerCase();
+    const map={
+      pdf:'ti-file-type-pdf',
+      doc:'ti-file-type-doc',docx:'ti-file-type-doc',
+      xls:'ti-file-type-xls',xlsx:'ti-file-type-xls',
+      ppt:'ti-file-type-ppt',pptx:'ti-file-type-ppt',
+      jpg:'ti-photo',jpeg:'ti-photo',png:'ti-photo',gif:'ti-photo',webp:'ti-photo',svg:'ti-photo',
+      mp4:'ti-video',mov:'ti-video',avi:'ti-video',mkv:'ti-video',
+      mp3:'ti-music',wav:'ti-music',
+      zip:'ti-file-zip',rar:'ti-file-zip',
+      txt:'ti-file-text',csv:'ti-file-type-csv',
+      js:'ti-file-type-js',html:'ti-file-type-html',css:'ti-file-type-css',
+    };
+    return 'ti '+(map[ext]||'ti-file');
+  }
+
+  // ── ALERTS ──
   function buildAlerts(tasks){
-    const stack   = document.getElementById('alertStack');
-    const bellDot = document.getElementById('bellDot');
+    const stack=document.getElementById('alertStack');
+    const bellDot=document.getElementById('bellDot');
     stack.innerHTML='';
-
-    const overdue   = tasks.filter(t=>isOverdue(t));
-    const dueTomrow = tasks.filter(t=>isDueTomorrow(t));
-
+    const overdue  =tasks.filter(t=>isOverdue(t));
+    const dueTomrow=tasks.filter(t=>isDueTomorrow(t));
     let hasAlerts=false;
-
-    // Overdue banner
     if(overdue.length>0){
       hasAlerts=true;
       const el=document.createElement('div');
@@ -310,17 +370,11 @@
         <div class="alert-icon"><i class="ti ti-alert-triangle"></i></div>
         <div class="alert-body">
           <div class="alert-title">⚠️ You have ${overdue.length} overdue task${overdue.length>1?'s':''}!</div>
-          <ul class="alert-tasks">
-            ${overdue.map(t=>`<li><i class="ti ti-point-filled"></i><strong>${t.title}</strong> — was due ${formatDate(t.dueDate)}</li>`).join('')}
-          </ul>
+          <ul class="alert-tasks">${overdue.map(t=>`<li><i class="ti ti-point-filled"></i><strong>${t.title}</strong> — was due ${formatDate(t.dueDate)}</li>`).join('')}</ul>
         </div>
-        <button class="alert-dismiss" title="Dismiss" onclick="this.closest('.alert').remove()">
-          <i class="ti ti-x"></i>
-        </button>`;
+        <button class="alert-dismiss" onclick="this.closest('.alert').remove()"><i class="ti ti-x"></i></button>`;
       stack.appendChild(el);
     }
-
-    // Due tomorrow banner
     if(dueTomrow.length>0){
       hasAlerts=true;
       const el=document.createElement('div');
@@ -329,27 +383,18 @@
         <div class="alert-icon"><i class="ti ti-clock"></i></div>
         <div class="alert-body">
           <div class="alert-title">⏰ ${dueTomrow.length>1?'These tasks are':'This task is'} due tomorrow!</div>
-          <ul class="alert-tasks">
-            ${dueTomrow.map(t=>`<li><i class="ti ti-point-filled"></i><strong>${t.title}</strong>${t.priority==='urgent'?' 🔴 Urgent':t.priority==='high'?' 🟠 High':''}</li>`).join('')}
-          </ul>
+          <ul class="alert-tasks">${dueTomrow.map(t=>`<li><i class="ti ti-point-filled"></i><strong>${t.title}</strong>${t.priority==='urgent'?' 🔴 Urgent':t.priority==='high'?' 🟠 High':''}</li>`).join('')}</ul>
         </div>
-        <button class="alert-dismiss" title="Dismiss" onclick="this.closest('.alert').remove()">
-          <i class="ti ti-x"></i>
-        </button>`;
+        <button class="alert-dismiss" onclick="this.closest('.alert').remove()"><i class="ti ti-x"></i></button>`;
       stack.appendChild(el);
     }
-
-    // Bell dot
-    bellDot.style.display = hasAlerts ? 'block' : 'none';
+    bellDot.style.display=hasAlerts?'block':'none';
   }
 
   window.scrollToAlerts=function(){
     const stack=document.getElementById('alertStack');
-    if(stack.children.length>0){
-      stack.scrollIntoView({behavior:'smooth',block:'start'});
-    } else {
-      showToast('✓ No urgent alerts right now','success');
-    }
+    if(stack.children.length>0) stack.scrollIntoView({behavior:'smooth',block:'start'});
+    else showToast('✓ No urgent alerts right now','success');
   };
 
   // ── FILTER ──
@@ -368,7 +413,7 @@
     onSnapshot(q,(snap)=>{
       allTasks=snap.docs.map(d=>({id:d.id,...d.data()}));
       updateStats();
-      buildAlerts(allTasks);   // ✅ check for overdue / due tomorrow every time tasks update
+      buildAlerts(allTasks);
       renderTasks();
     });
   }
@@ -392,6 +437,7 @@
     const iv=setInterval(()=>{cur+=step;el.textContent=cur;if(cur===target)clearInterval(iv);},60);
   }
 
+  // ── RENDER TASKS ──
   function renderTasks(){
     const list=document.getElementById('taskList');
     let filtered=allTasks;
@@ -401,13 +447,10 @@
     else if(currentFilter==='due-soon')  filtered=allTasks.filter(t=>isDueSoon(t)&&!isOverdue(t));
 
     if(filtered.length===0){
-      list.innerHTML=`<div class="empty"><i class="ti ti-clipboard-x"></i><p>${
-        currentFilter==='all'?'No tasks assigned to you yet.':'No '+currentFilter.replace('-',' ')+' tasks.'
-      }</p></div>`;
+      list.innerHTML=`<div class="empty"><i class="ti ti-clipboard-x"></i><p>${currentFilter==='all'?'No tasks assigned to you yet.':'No '+currentFilter.replace('-',' ')+' tasks.'}</p></div>`;
       return;
     }
 
-    // sort: overdue → due tomorrow → pending → completed
     const sorted=[...filtered].sort((a,b)=>{
       if(a.status==='Completed'&&b.status!=='Completed') return 1;
       if(b.status==='Completed'&&a.status!=='Completed') return -1;
@@ -424,25 +467,210 @@
       const soon   =isDueSoon(task)&&!over;
       const cardCls=done?'completed':over?'overdue':soon?'due-soon':'pending';
       return `
-        <div class="task-card ${cardCls}" style="animation-delay:${i*0.05}s">
-          <div class="task-check ${done?'done':''}" onclick="${done?'markPending':'markCompleted'}('${task.id}')">
-            ${done?'<i class="ti ti-check"></i>':''}
+        <div class="task-card ${cardCls}" style="animation-delay:${i*0.05}s" id="card-${task.id}">
+          <div class="task-top">
+            <div class="task-check ${done?'done':''}" onclick="${done?'markPending':'markCompleted'}('${task.id}')">
+              ${done?'<i class="ti ti-check"></i>':''}
+            </div>
+            <div class="task-body">
+              <div class="task-title">${task.title||'Untitled task'}</div>
+              <div class="task-desc">${task.description||''}</div>
+              <div class="task-footer">
+                <span class="badge ${done?'badge-completed':'badge-pending'}">${done?'Completed':'Pending'}</span>
+                ${task.priority?priBadge(task.priority):''}
+                ${dueBadge(task)}
+                ${done
+                  ?`<button class="task-action btn-pending" onclick="markPending('${task.id}')"><i class="ti ti-refresh" style="font-size:12px;vertical-align:-1px;"></i> Mark pending</button>`
+                  :`<button class="task-action btn-complete" onclick="markCompleted('${task.id}')"><i class="ti ti-check" style="font-size:12px;vertical-align:-1px;"></i> Mark complete</button>`}
+              </div>
+            </div>
           </div>
-          <div class="task-body">
-            <div class="task-title">${task.title||'Untitled task'}</div>
-            <div class="task-desc">${task.description||''}</div>
-            <div class="task-footer">
-              <span class="badge ${done?'badge-completed':'badge-pending'}">${done?'Completed':'Pending'}</span>
-              ${task.priority?priBadge(task.priority):''}
-              ${dueBadge(task)}
-              ${done
-                ?`<button class="task-action btn-pending" onclick="markPending('${task.id}')"><i class="ti ti-refresh" style="font-size:12px;vertical-align:-1px;"></i> Mark pending</button>`
-                :`<button class="task-action btn-complete" onclick="markCompleted('${task.id}')"><i class="ti ti-check" style="font-size:12px;vertical-align:-1px;"></i> Mark complete</button>`}
+
+          <!-- ✅ FILE UPLOAD SECTION -->
+          <div class="task-files">
+            <div class="files-header">
+              <div class="files-label"><i class="ti ti-paperclip"></i> Output files</div>
+            </div>
+
+            <!-- drop zone -->
+            <div class="drop-zone" id="drop-${task.id}"
+              ondragover="handleDragOver(event,'${task.id}')"
+              ondragleave="handleDragLeave(event,'${task.id}')"
+              ondrop="handleDrop(event,'${task.id}')">
+              <input type="file" multiple id="fileinput-${task.id}"
+                onchange="handleFileSelect(event,'${task.id}')">
+              <i class="ti ti-cloud-upload drop-zone-icon"></i>
+              <div class="drop-zone-text"><strong>Click to upload</strong> or drag & drop files here</div>
+              <div class="drop-zone-hint">Any file type · Max 1 GB per file · No limit on number of files</div>
+            </div>
+
+            <!-- active uploads -->
+            <div class="upload-list" id="uploads-${task.id}"></div>
+
+            <!-- uploaded files -->
+            <div class="file-list" id="files-${task.id}">
+              <div class="no-files">No files uploaded yet</div>
             </div>
           </div>
         </div>`;
     }).join('');
+
+    // Load existing files for each task
+    sorted.forEach(task=>loadFiles(task.id));
   }
+
+  // ── LOAD EXISTING FILES FROM FIRESTORE ──
+  function loadFiles(taskId){
+    const q=query(
+      collection(db,'task_files'),
+      where('taskId','==',taskId),
+      where('uploadedBy','==',currentUserEmail)
+    );
+    onSnapshot(q,(snap)=>{
+      const container=document.getElementById('files-'+taskId);
+      if(!container) return;
+      if(snap.empty){
+        container.innerHTML='<div class="no-files">No files uploaded yet</div>';
+        return;
+      }
+      const files=snap.docs.map(d=>({id:d.id,...d.data()}));
+      files.sort((a,b)=>(b.uploadedAt?.seconds||0)-(a.uploadedAt?.seconds||0));
+      container.innerHTML=files.map(f=>`
+        <div class="file-item" id="file-${f.id}">
+          <i class="${fileIcon(f.name)} file-item-icon"></i>
+          <div class="file-item-info">
+            <div class="file-item-name" title="${f.name}">${f.name}</div>
+            <div class="file-item-meta">${formatBytes(f.size)} · ${f.uploadedAt?new Date(f.uploadedAt.seconds*1000).toLocaleDateString([],{month:'short',day:'numeric',year:'numeric',hour:'2-digit',minute:'2-digit'}):'just now'}</div>
+          </div>
+          <div class="file-item-actions">
+            <a href="${f.url}" target="_blank" download="${f.name}" class="file-btn download" title="Download">
+              <i class="ti ti-download"></i>
+            </a>
+            <button class="file-btn delete" title="Delete" onclick="deleteFile('${f.id}','${f.storagePath.replace(/'/g,"\\'")}','${taskId}')">
+              <i class="ti ti-trash"></i>
+            </button>
+          </div>
+        </div>`).join('');
+    });
+  }
+
+  // ── DRAG & DROP HANDLERS ──
+  window.handleDragOver=function(e,taskId){
+    e.preventDefault();
+    document.getElementById('drop-'+taskId).classList.add('drag-over');
+  };
+  window.handleDragLeave=function(e,taskId){
+    document.getElementById('drop-'+taskId).classList.remove('drag-over');
+  };
+  window.handleDrop=function(e,taskId){
+    e.preventDefault();
+    document.getElementById('drop-'+taskId).classList.remove('drag-over');
+    uploadFiles(Array.from(e.dataTransfer.files),taskId);
+  };
+  window.handleFileSelect=function(e,taskId){
+    uploadFiles(Array.from(e.target.files),taskId);
+    e.target.value=''; // reset so same file can be re-selected
+  };
+
+  // ── UPLOAD FILES ──
+  function uploadFiles(files,taskId){
+    files.forEach(file=>{
+      // 1GB limit check
+      if(file.size>MAX_FILE_SIZE){
+        showToast(`❌ ${file.name} exceeds 1 GB limit`,'danger');
+        return;
+      }
+      uploadSingleFile(file,taskId);
+    });
+  }
+
+  function uploadSingleFile(file,taskId){
+    const uploadList=document.getElementById('uploads-'+taskId);
+    if(!uploadList) return;
+
+    // unique ID for this upload item
+    const uid='up-'+Date.now()+'-'+Math.random().toString(36).slice(2,6);
+
+    // add progress item to UI
+    const item=document.createElement('div');
+    item.className='upload-item';
+    item.id=uid;
+    item.innerHTML=`
+      <div class="upload-item-top">
+        <i class="${fileIcon(file.name)} file-type-icon"></i>
+        <div class="upload-item-name">${file.name}</div>
+        <div class="upload-item-size">${formatBytes(file.size)}</div>
+        <button class="upload-cancel" id="cancel-${uid}" title="Cancel"><i class="ti ti-x"></i></button>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="prog-${uid}"></div></div>
+      <div class="upload-status" id="status-${uid}">Uploading…</div>`;
+    uploadList.appendChild(item);
+
+    // storage path: task_outputs/{taskId}/{userId}/{timestamp}_{filename}
+    const storagePath=`task_outputs/${taskId}/${currentUserId}/${Date.now()}_${file.name}`;
+    const storageRef=ref(storage,storagePath);
+    const uploadTask=uploadBytesResumable(storageRef,file);
+
+    // cancel button
+    document.getElementById('cancel-'+uid).onclick=()=>{
+      uploadTask.cancel();
+      item.remove();
+    };
+
+    uploadTask.on('state_changed',
+      (snapshot)=>{
+        const pct=Math.round((snapshot.bytesTransferred/snapshot.totalBytes)*100);
+        const fill=document.getElementById('prog-'+uid);
+        const status=document.getElementById('status-'+uid);
+        if(fill) fill.style.width=pct+'%';
+        if(status) status.textContent=`Uploading… ${pct}%`;
+      },
+      (error)=>{
+        if(error.code==='storage/canceled') return;
+        const fill=document.getElementById('prog-'+uid);
+        const status=document.getElementById('status-'+uid);
+        if(fill){fill.style.width='100%';fill.classList.add('error');}
+        if(status) status.textContent='Upload failed: '+error.message;
+        showToast('❌ Upload failed: '+file.name,'danger');
+        setTimeout(()=>item.remove(),4000);
+      },
+      async ()=>{
+        // Upload complete — get download URL and save to Firestore
+        const url=await getDownloadURL(uploadTask.snapshot.ref);
+        await addDoc(collection(db,'task_files'),{
+          taskId,
+          name:       file.name,
+          size:       file.size,
+          url,
+          storagePath,
+          uploadedBy: currentUserEmail,
+          uploadedAt: serverTimestamp()
+        });
+        const fill=document.getElementById('prog-'+uid);
+        const status=document.getElementById('status-'+uid);
+        if(fill){fill.style.width='100%';fill.classList.add('done');}
+        if(status) status.textContent='Upload complete!';
+        showToast('✓ '+file.name+' uploaded','success');
+        setTimeout(()=>item.remove(),1500);
+      }
+    );
+  }
+
+  // ── DELETE FILE ──
+  window.deleteFile=async function(fileDocId,storagePath,taskId){
+    if(!confirm('Delete this file? This cannot be undone.')) return;
+    try{
+      // delete from Storage
+      await deleteObject(ref(storage,storagePath));
+      // delete from Firestore
+      await deleteDoc(doc(db,'task_files',fileDocId));
+      showToast('🗑 File deleted','danger');
+    }catch(err){
+      // if storage file already gone, still remove Firestore doc
+      await deleteDoc(doc(db,'task_files',fileDocId));
+      showToast('🗑 File removed','danger');
+    }
+  };
 
   window.markCompleted=async function(taskId){
     await updateDoc(doc(db,'tasks',taskId),{status:'Completed'});
@@ -458,7 +686,7 @@
     const wrap=document.getElementById('toastWrap');
     const toast=document.createElement('div');
     toast.className='toast';
-    toast.style.background=type==='success'?'#059669':'#D97706';
+    toast.style.background=type==='success'?'#059669':type==='danger'?'#DC2626':'#D97706';
     toast.textContent=msg;
     wrap.appendChild(toast);
     setTimeout(()=>toast.remove(),3500);
