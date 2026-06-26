@@ -9,15 +9,60 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
   <style>
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-    :root{--brand:#4F46E5;--brand-soft:#EEF2FF;--brand-mid:#818CF8;--success:#059669;--success-soft:#D1FAE5;--warn:#D97706;--warn-soft:#FEF3C7;--danger:#DC2626;--danger-soft:#FEE2E2;--text-1:#111827;--text-2:#6B7280;--text-3:#9CA3AF;--bg:#F9FAFB;--surface:#FFFFFF;--border:#E5E7EB;--radius:12px;--radius-sm:8px;}
+    :root{
+      --brand:#4F46E5;--brand-soft:#EEF2FF;--brand-mid:#818CF8;
+      --success:#059669;--success-soft:#D1FAE5;
+      --warn:#D97706;--warn-soft:#FEF3C7;
+      --danger:#DC2626;--danger-soft:#FEE2E2;
+      --text-1:#111827;--text-2:#6B7280;--text-3:#9CA3AF;
+      --bg:#F9FAFB;--surface:#FFFFFF;--border:#E5E7EB;
+      --radius:12px;--radius-sm:8px;
+    }
     body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text-1);min-height:100vh;}
+
+    /* NAV */
     nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 1.5rem;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
     .nav-brand{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:17px;color:var(--brand);display:flex;align-items:center;gap:8px;}
     .nav-right{display:flex;align-items:center;gap:12px;}
     .nav-clock{font-size:13px;font-weight:500;color:var(--text-2);background:var(--bg);padding:4px 12px;border-radius:20px;border:1px solid var(--border);}
+
+    /* notification bell */
+    .bell-btn{position:relative;width:36px;height:36px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--bg);color:var(--text-2);display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;transition:all 0.15s;}
+    .bell-btn:hover{color:var(--brand);border-color:var(--brand);background:var(--brand-soft);}
+    .bell-dot{position:absolute;top:6px;right:6px;width:8px;height:8px;border-radius:50%;background:var(--danger);border:2px solid var(--surface);display:none;animation:pulse 2s infinite;}
+    @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.5;}}
+
     .btn-logout{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:500;color:var(--text-2);background:transparent;border:1px solid var(--border);border-radius:var(--radius-sm);padding:6px 14px;cursor:pointer;transition:all 0.15s;}
     .btn-logout:hover{background:var(--bg);color:var(--danger);border-color:var(--danger);}
+
     .page{max-width:860px;margin:0 auto;padding:2rem 1.25rem 4rem;}
+
+    /* ── ALERT BANNERS ── */
+    .alert-stack{display:flex;flex-direction:column;gap:8px;margin-bottom:1.25rem;}
+
+    .alert{border-radius:var(--radius);padding:14px 18px;display:flex;align-items:flex-start;gap:12px;animation:slideDown 0.4s ease both;}
+    @keyframes slideDown{from{opacity:0;transform:translateY(-10px);}to{opacity:1;transform:translateY(0);}}
+
+    .alert-danger{background:#FFF5F5;border:1px solid #FECACA;}
+    .alert-warn  {background:#FFFBEB;border:1px solid #FDE68A;}
+
+    .alert-icon{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+    .alert-danger .alert-icon{background:var(--danger-soft);color:var(--danger);}
+    .alert-warn  .alert-icon{background:var(--warn-soft);color:var(--warn);}
+
+    .alert-body{flex:1;}
+    .alert-title{font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:700;margin-bottom:4px;}
+    .alert-danger .alert-title{color:var(--danger);}
+    .alert-warn  .alert-title{color:var(--warn);}
+    .alert-tasks{list-style:none;display:flex;flex-direction:column;gap:4px;margin-top:6px;}
+    .alert-tasks li{font-size:13px;color:var(--text-1);display:flex;align-items:center;gap:6px;}
+    .alert-tasks li i{font-size:14px;}
+    .alert-danger .alert-tasks li i{color:var(--danger);}
+    .alert-warn  .alert-tasks li i{color:var(--warn);}
+    .alert-dismiss{background:none;border:none;cursor:pointer;font-size:16px;color:var(--text-3);padding:0;flex-shrink:0;transition:color 0.15s;margin-top:2px;}
+    .alert-dismiss:hover{color:var(--text-1);}
+
+    /* HERO */
     .hero{background:var(--brand);border-radius:var(--radius);padding:1.5rem 1.75rem;color:white;display:flex;align-items:center;justify-content:space-between;gap:1rem;margin-bottom:1.25rem;position:relative;overflow:hidden;}
     .hero::before{content:'';position:absolute;right:-40px;top:-40px;width:180px;height:180px;background:rgba(255,255,255,0.06);border-radius:50%;}
     .hero::after{content:'';position:absolute;right:40px;bottom:-50px;width:120px;height:120px;background:rgba(255,255,255,0.04);border-radius:50%;}
@@ -26,42 +71,65 @@
     .hero-name{font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;margin-bottom:4px;}
     .hero-sub{font-size:13px;opacity:0.8;}
     .hero-avatar{width:56px;height:56px;border-radius:50%;background:rgba(255,255,255,0.18);border:2px solid rgba(255,255,255,0.35);display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:700;flex-shrink:0;z-index:1;}
+
+    /* STATS */
     .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:1.25rem;}
     .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1rem 1.1rem;display:flex;align-items:center;gap:12px;transition:transform 0.15s;}
     .stat-card:hover{transform:translateY(-2px);}
     .stat-icon{width:40px;height:40px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
-    .stat-icon.blue{background:var(--brand-soft);color:var(--brand);}
+    .stat-icon.blue {background:var(--brand-soft);color:var(--brand);}
     .stat-icon.green{background:var(--success-soft);color:var(--success);}
     .stat-icon.amber{background:var(--warn-soft);color:var(--warn);}
+    .stat-icon.red  {background:var(--danger-soft);color:var(--danger);}
     .stat-label{font-size:12px;color:var(--text-2);margin-bottom:2px;}
     .stat-value{font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;color:var(--text-1);}
+
     .section-title{font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:700;color:var(--text-1);display:flex;align-items:center;gap:8px;margin-bottom:12px;}
     .section-title i{font-size:18px;color:var(--brand);}
     .filter-row{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;}
     .filter-btn{font-size:12px;font-weight:500;padding:5px 14px;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--text-2);cursor:pointer;transition:all 0.15s;}
     .filter-btn.active,.filter-btn:hover{background:var(--brand);color:white;border-color:var(--brand);}
+
+    /* TASK CARDS */
     #taskList{display:flex;flex-direction:column;gap:10px;}
     .task-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1rem 1.25rem;display:flex;align-items:flex-start;gap:14px;transition:box-shadow 0.2s,transform 0.15s;animation:slideIn 0.3s ease both;}
     @keyframes slideIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
     .task-card:hover{box-shadow:0 4px 16px rgba(79,70,229,0.08);transform:translateY(-1px);}
     .task-card.completed{opacity:0.7;border-left:3px solid var(--success);}
-    .task-card.pending{border-left:3px solid var(--brand);}
+    .task-card.pending  {border-left:3px solid var(--brand);}
+    .task-card.overdue  {border-left:3px solid var(--danger);background:#FFFAFA;}
+    .task-card.due-soon {border-left:3px solid var(--warn);background:#FFFDF0;}
+
     .task-check{width:22px;height:22px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.2s;}
     .task-check.done{background:var(--success);border-color:var(--success);color:white;}
     .task-check i{font-size:12px;}
     .task-body{flex:1;min-width:0;}
     .task-title{font-size:14px;font-weight:600;color:var(--text-1);margin-bottom:3px;}
     .task-card.completed .task-title{text-decoration:line-through;color:var(--text-2);}
-    .task-desc{font-size:13px;color:var(--text-2);line-height:1.5;margin-bottom:10px;}
-    .task-footer{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+    .task-desc{font-size:13px;color:var(--text-2);line-height:1.5;margin-bottom:8px;}
+    .task-footer{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+
     .badge{font-size:11px;font-weight:500;padding:3px 10px;border-radius:20px;}
-    .badge-pending{background:var(--brand-soft);color:var(--brand);}
+    .badge-pending  {background:var(--brand-soft);color:var(--brand);}
     .badge-completed{background:var(--success-soft);color:var(--success);}
+
+    /* priority + due badges */
+    .pri{font-size:10px;font-weight:700;padding:2px 9px;border-radius:20px;text-transform:uppercase;letter-spacing:0.04em;}
+    .pri-low    {background:#F0FDF4;color:#166534;}
+    .pri-medium {background:#EFF6FF;color:#1D4ED8;}
+    .pri-high   {background:var(--warn-soft);color:var(--warn);}
+    .pri-urgent {background:var(--danger-soft);color:var(--danger);}
+    .due{font-size:11px;font-weight:500;display:inline-flex;align-items:center;gap:4px;padding:2px 9px;border-radius:20px;}
+    .due-ok     {background:#F0FDF4;color:#166534;}
+    .due-soon   {background:var(--warn-soft);color:var(--warn);}
+    .due-overdue{background:var(--danger-soft);color:var(--danger);}
+
     .task-action{margin-left:auto;font-size:12px;font-weight:500;padding:5px 14px;border-radius:var(--radius-sm);border:none;cursor:pointer;transition:all 0.15s;}
     .btn-complete{background:var(--success-soft);color:var(--success);}
     .btn-complete:hover{background:var(--success);color:white;}
-    .btn-pending{background:var(--bg);color:var(--text-2);border:1px solid var(--border);}
+    .btn-pending {background:var(--bg);color:var(--text-2);border:1px solid var(--border);}
     .btn-pending:hover{background:var(--warn-soft);color:var(--warn);border-color:var(--warn);}
+
     .empty{text-align:center;padding:3rem 1rem;color:var(--text-3);}
     .empty i{font-size:40px;margin-bottom:12px;display:block;}
     .empty p{font-size:14px;}
@@ -79,11 +147,21 @@
   <div class="nav-brand"><i class="ti ti-layout-dashboard"></i> My Dashboard</div>
   <div class="nav-right">
     <span class="nav-clock" id="navClock">--:--:--</span>
+    <!-- notification bell -->
+    <button class="bell-btn" id="bellBtn" title="Notifications" onclick="scrollToAlerts()">
+      <i class="ti ti-bell"></i>
+      <span class="bell-dot" id="bellDot"></span>
+    </button>
     <button class="btn-logout" onclick="logout()"><i class="ti ti-logout"></i> Sign out</button>
   </div>
 </nav>
 
 <div class="page">
+
+  <!-- ── ALERT BANNERS (injected by JS) ── -->
+  <div class="alert-stack" id="alertStack"></div>
+
+  <!-- HERO -->
   <div class="hero">
     <div class="hero-left">
       <div class="hero-label">Welcome back</div>
@@ -93,10 +171,11 @@
     <div class="hero-avatar" id="heroAvatar">??</div>
   </div>
 
-  <div class="stats">
+  <!-- STATS — now 4 cards -->
+  <div class="stats" style="grid-template-columns:repeat(4,1fr);">
     <div class="stat-card">
       <div class="stat-icon blue"><i class="ti ti-clipboard-list"></i></div>
-      <div><div class="stat-label">Total tasks</div><div class="stat-value" id="statTotal">—</div></div>
+      <div><div class="stat-label">Total</div><div class="stat-value" id="statTotal">—</div></div>
     </div>
     <div class="stat-card">
       <div class="stat-icon green"><i class="ti ti-circle-check"></i></div>
@@ -106,6 +185,10 @@
       <div class="stat-icon amber"><i class="ti ti-clock"></i></div>
       <div><div class="stat-label">Pending</div><div class="stat-value" id="statPending">—</div></div>
     </div>
+    <div class="stat-card">
+      <div class="stat-icon red"><i class="ti ti-alert-triangle"></i></div>
+      <div><div class="stat-label">Overdue</div><div class="stat-value" id="statOverdue" style="color:var(--danger);">—</div></div>
+    </div>
   </div>
 
   <div class="section-title"><i class="ti ti-list-check"></i> My tasks</div>
@@ -113,6 +196,8 @@
     <button class="filter-btn active" onclick="setFilter('all',this)">All</button>
     <button class="filter-btn" onclick="setFilter('Pending',this)">Pending</button>
     <button class="filter-btn" onclick="setFilter('Completed',this)">Completed</button>
+    <button class="filter-btn" onclick="setFilter('overdue',this)">🔴 Overdue</button>
+    <button class="filter-btn" onclick="setFilter('due-soon',this)">🟠 Due soon</button>
   </div>
 
   <div id="taskList">
@@ -127,7 +212,6 @@
 <div class="toast-wrap" id="toastWrap"></div>
 
 <script type="module">
-  // ── IMPORTS (app first, always) ──
   import { app } from "./firebase-config.js";
   import { getAuth, onAuthStateChanged, signOut }
     from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
@@ -139,135 +223,245 @@
   const auth = getAuth(app);
   const db   = getFirestore(app);
 
-  // ── CLOCK (no auth needed) ──
-  function tick() {
+  // today and tomorrow at midnight
+  const today    = new Date(); today.setHours(0,0,0,0);
+  const tomorrow = new Date(today); tomorrow.setDate(tomorrow.getDate()+1);
+
+  // ── CLOCK ──
+  function tick(){
     document.getElementById('navClock').textContent =
-      new Date().toLocaleTimeString([], { hour:'2-digit', minute:'2-digit', second:'2-digit' });
+      new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',second:'2-digit'});
   }
-  setInterval(tick, 1000); tick();
+  setInterval(tick,1000); tick();
 
-  // ── GREETING ──
-  const h = new Date().getHours();
-  const greet = h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening';
+  const h=new Date().getHours();
+  const greet=h<12?'Good morning':h<17?'Good afternoon':'Good evening';
 
-  // ── AUTH GUARD (inline) ──
-  onAuthStateChanged(auth, async (user) => {
-    if (!user) { window.location.href = 'login.html'; return; }
+  // ── AUTH GUARD ──
+  onAuthStateChanged(auth, async (user)=>{
+    if(!user){window.location.href='login.html';return;}
+    const q=query(collection(db,'users'),where('email','==',user.email));
+    const snap=await getDocs(q);
+    if(snap.empty){window.location.href='login.html';return;}
+    let role=''; snap.forEach(d=>{role=d.data().role;});
+    if(role!=='employee'){window.location.href='admin-dashboard.html';return;}
 
-    // Check role
-    const q    = query(collection(db, 'users'), where('email', '==', user.email));
-    const snap = await getDocs(q);
-    if (snap.empty) { window.location.href = 'login.html'; return; }
-
-    let role = '';
-    snap.forEach(d => { role = d.data().role; });
-
-    if (role !== 'employee') {
-      // Admin tried to access employee page — send them to admin dashboard
-      window.location.href = 'admin-dashboard.html';
-      return;
-    }
-
-    // ✅ Confirmed employee — set up UI
     const emailPart  = user.email.split('@')[0];
-    const name       = emailPart.charAt(0).toUpperCase() + emailPart.slice(1);
-    const initials   = name.slice(0,2).toUpperCase();
-
-    document.getElementById('heroName').textContent   = greet + ', ' + name + ' 👋';
+    const name       = emailPart.charAt(0).toUpperCase()+emailPart.slice(1);
+    document.getElementById('heroName').textContent   = greet+', '+name+' 👋';
     document.getElementById('heroSub').textContent    = user.email;
-    document.getElementById('heroAvatar').textContent = initials;
+    document.getElementById('heroAvatar').textContent = name.slice(0,2).toUpperCase();
 
     loadTasks(user.email);
   });
 
-  // ── FILTER ──
-  let currentFilter = 'all';
-  let allTasks = [];
+  // ── DATE HELPERS ──
+  function isOverdue(task){
+    if(!task.dueDate||task.status==='Completed') return false;
+    const due=new Date(task.dueDate); due.setHours(0,0,0,0);
+    return due<today;
+  }
+  function isDueTomorrow(task){
+    if(!task.dueDate||task.status==='Completed') return false;
+    const due=new Date(task.dueDate); due.setHours(0,0,0,0);
+    return due.getTime()===tomorrow.getTime();
+  }
+  function isDueSoon(task){
+    if(!task.dueDate||task.status==='Completed') return false;
+    const due=new Date(task.dueDate); due.setHours(0,0,0,0);
+    const diff=(due-today)/(1000*60*60*24);
+    return diff>=0&&diff<=2;
+  }
+  function formatDate(str){
+    if(!str) return '';
+    return new Date(str).toLocaleDateString([],{month:'short',day:'numeric',year:'numeric'});
+  }
+  function dueBadge(task){
+    if(!task.dueDate) return '';
+    if(isOverdue(task))   return `<span class="due due-overdue"><i class="ti ti-alert-circle" style="font-size:11px;"></i> Overdue · ${formatDate(task.dueDate)}</span>`;
+    if(isDueTomorrow(task))return `<span class="due due-soon"><i class="ti ti-clock" style="font-size:11px;"></i> Due tomorrow!</span>`;
+    if(isDueSoon(task))   return `<span class="due due-soon"><i class="ti ti-clock" style="font-size:11px;"></i> Due soon · ${formatDate(task.dueDate)}</span>`;
+    return `<span class="due due-ok"><i class="ti ti-calendar" style="font-size:11px;"></i> Due ${formatDate(task.dueDate)}</span>`;
+  }
+  function priBadge(p){
+    const map  ={low:'pri-low',medium:'pri-medium',high:'pri-high',urgent:'pri-urgent'};
+    const label={low:'Low',medium:'Medium',high:'High',urgent:'Urgent'};
+    const icon ={low:'🟢',medium:'🔵',high:'🟠',urgent:'🔴'};
+    return `<span class="pri ${map[p]||'pri-medium'}">${icon[p]||'🔵'} ${label[p]||'Medium'}</span>`;
+  }
 
-  window.setFilter = function(filter, btn) {
-    currentFilter = filter;
-    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  // ── ALERT BANNERS ──
+  function buildAlerts(tasks){
+    const stack   = document.getElementById('alertStack');
+    const bellDot = document.getElementById('bellDot');
+    stack.innerHTML='';
+
+    const overdue   = tasks.filter(t=>isOverdue(t));
+    const dueTomrow = tasks.filter(t=>isDueTomorrow(t));
+
+    let hasAlerts=false;
+
+    // Overdue banner
+    if(overdue.length>0){
+      hasAlerts=true;
+      const el=document.createElement('div');
+      el.className='alert alert-danger';
+      el.innerHTML=`
+        <div class="alert-icon"><i class="ti ti-alert-triangle"></i></div>
+        <div class="alert-body">
+          <div class="alert-title">⚠️ You have ${overdue.length} overdue task${overdue.length>1?'s':''}!</div>
+          <ul class="alert-tasks">
+            ${overdue.map(t=>`<li><i class="ti ti-point-filled"></i><strong>${t.title}</strong> — was due ${formatDate(t.dueDate)}</li>`).join('')}
+          </ul>
+        </div>
+        <button class="alert-dismiss" title="Dismiss" onclick="this.closest('.alert').remove()">
+          <i class="ti ti-x"></i>
+        </button>`;
+      stack.appendChild(el);
+    }
+
+    // Due tomorrow banner
+    if(dueTomrow.length>0){
+      hasAlerts=true;
+      const el=document.createElement('div');
+      el.className='alert alert-warn';
+      el.innerHTML=`
+        <div class="alert-icon"><i class="ti ti-clock"></i></div>
+        <div class="alert-body">
+          <div class="alert-title">⏰ ${dueTomrow.length>1?'These tasks are':'This task is'} due tomorrow!</div>
+          <ul class="alert-tasks">
+            ${dueTomrow.map(t=>`<li><i class="ti ti-point-filled"></i><strong>${t.title}</strong>${t.priority==='urgent'?' 🔴 Urgent':t.priority==='high'?' 🟠 High':''}</li>`).join('')}
+          </ul>
+        </div>
+        <button class="alert-dismiss" title="Dismiss" onclick="this.closest('.alert').remove()">
+          <i class="ti ti-x"></i>
+        </button>`;
+      stack.appendChild(el);
+    }
+
+    // Bell dot
+    bellDot.style.display = hasAlerts ? 'block' : 'none';
+  }
+
+  window.scrollToAlerts=function(){
+    const stack=document.getElementById('alertStack');
+    if(stack.children.length>0){
+      stack.scrollIntoView({behavior:'smooth',block:'start'});
+    } else {
+      showToast('✓ No urgent alerts right now','success');
+    }
+  };
+
+  // ── FILTER ──
+  let currentFilter='all', allTasks=[];
+
+  window.setFilter=function(filter,btn){
+    currentFilter=filter;
+    document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
     btn.classList.add('active');
     renderTasks();
   };
 
-  // ── TASKS ──
-  function loadTasks(email) {
-    const q = query(collection(db,'tasks'), where('assignedTo','==',email));
-    onSnapshot(q, (snap) => {
-      allTasks = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  // ── LOAD TASKS ──
+  function loadTasks(email){
+    const q=query(collection(db,'tasks'),where('assignedTo','==',email));
+    onSnapshot(q,(snap)=>{
+      allTasks=snap.docs.map(d=>({id:d.id,...d.data()}));
       updateStats();
+      buildAlerts(allTasks);   // ✅ check for overdue / due tomorrow every time tasks update
       renderTasks();
     });
   }
 
-  function updateStats() {
-    const total   = allTasks.length;
-    const done    = allTasks.filter(t => t.status === 'Completed').length;
-    const pending = allTasks.filter(t => t.status === 'Pending').length;
-    animateNum('statTotal', total);
-    animateNum('statDone', done);
-    animateNum('statPending', pending);
+  function updateStats(){
+    const total  =allTasks.length;
+    const done   =allTasks.filter(t=>t.status==='Completed').length;
+    const pending=allTasks.filter(t=>t.status==='Pending').length;
+    const overdue=allTasks.filter(t=>isOverdue(t)).length;
+    animateNum('statTotal',  total);
+    animateNum('statDone',   done);
+    animateNum('statPending',pending);
+    animateNum('statOverdue',overdue);
   }
 
-  function animateNum(id, target) {
-    const el  = document.getElementById(id);
-    let cur   = parseInt(el.textContent) || 0;
-    if (cur === target) { el.textContent = target; return; }
-    const step = target > cur ? 1 : -1;
-    const iv = setInterval(() => { cur += step; el.textContent = cur; if (cur === target) clearInterval(iv); }, 60);
+  function animateNum(id,target){
+    const el=document.getElementById(id);
+    let cur=parseInt(el.textContent)||0;
+    if(cur===target){el.textContent=target;return;}
+    const step=target>cur?1:-1;
+    const iv=setInterval(()=>{cur+=step;el.textContent=cur;if(cur===target)clearInterval(iv);},60);
   }
 
-  function renderTasks() {
-    const list     = document.getElementById('taskList');
-    const filtered = currentFilter === 'all' ? allTasks : allTasks.filter(t => t.status === currentFilter);
-    if (filtered.length === 0) {
-      list.innerHTML = `<div class="empty"><i class="ti ti-clipboard-x"></i><p>${currentFilter === 'all' ? 'No tasks assigned to you yet.' : 'No ' + currentFilter.toLowerCase() + ' tasks.'}</p></div>`;
+  function renderTasks(){
+    const list=document.getElementById('taskList');
+    let filtered=allTasks;
+    if     (currentFilter==='Pending')   filtered=allTasks.filter(t=>t.status==='Pending');
+    else if(currentFilter==='Completed') filtered=allTasks.filter(t=>t.status==='Completed');
+    else if(currentFilter==='overdue')   filtered=allTasks.filter(t=>isOverdue(t));
+    else if(currentFilter==='due-soon')  filtered=allTasks.filter(t=>isDueSoon(t)&&!isOverdue(t));
+
+    if(filtered.length===0){
+      list.innerHTML=`<div class="empty"><i class="ti ti-clipboard-x"></i><p>${
+        currentFilter==='all'?'No tasks assigned to you yet.':'No '+currentFilter.replace('-',' ')+' tasks.'
+      }</p></div>`;
       return;
     }
-    const sorted = [...filtered].sort((a,b) => a.status === b.status ? 0 : a.status === 'Pending' ? -1 : 1);
-    list.innerHTML = sorted.map((task, i) => {
-      const done = task.status === 'Completed';
+
+    // sort: overdue → due tomorrow → pending → completed
+    const sorted=[...filtered].sort((a,b)=>{
+      if(a.status==='Completed'&&b.status!=='Completed') return 1;
+      if(b.status==='Completed'&&a.status!=='Completed') return -1;
+      if(isOverdue(a)&&!isOverdue(b)) return -1;
+      if(isOverdue(b)&&!isOverdue(a)) return 1;
+      if(isDueTomorrow(a)&&!isDueTomorrow(b)) return -1;
+      if(isDueTomorrow(b)&&!isDueTomorrow(a)) return 1;
+      return 0;
+    });
+
+    list.innerHTML=sorted.map((task,i)=>{
+      const done   =task.status==='Completed';
+      const over   =isOverdue(task);
+      const soon   =isDueSoon(task)&&!over;
+      const cardCls=done?'completed':over?'overdue':soon?'due-soon':'pending';
       return `
-        <div class="task-card ${done?'completed':'pending'}" style="animation-delay:${i*0.05}s">
+        <div class="task-card ${cardCls}" style="animation-delay:${i*0.05}s">
           <div class="task-check ${done?'done':''}" onclick="${done?'markPending':'markCompleted'}('${task.id}')">
-            ${done ? '<i class="ti ti-check"></i>' : ''}
+            ${done?'<i class="ti ti-check"></i>':''}
           </div>
           <div class="task-body">
             <div class="task-title">${task.title||'Untitled task'}</div>
             <div class="task-desc">${task.description||''}</div>
             <div class="task-footer">
               <span class="badge ${done?'badge-completed':'badge-pending'}">${done?'Completed':'Pending'}</span>
+              ${task.priority?priBadge(task.priority):''}
+              ${dueBadge(task)}
               ${done
-                ? `<button class="task-action btn-pending" onclick="markPending('${task.id}')"><i class="ti ti-refresh" style="font-size:12px;vertical-align:-1px;"></i> Mark pending</button>`
-                : `<button class="task-action btn-complete" onclick="markCompleted('${task.id}')"><i class="ti ti-check" style="font-size:12px;vertical-align:-1px;"></i> Mark complete</button>`}
+                ?`<button class="task-action btn-pending" onclick="markPending('${task.id}')"><i class="ti ti-refresh" style="font-size:12px;vertical-align:-1px;"></i> Mark pending</button>`
+                :`<button class="task-action btn-complete" onclick="markCompleted('${task.id}')"><i class="ti ti-check" style="font-size:12px;vertical-align:-1px;"></i> Mark complete</button>`}
             </div>
           </div>
         </div>`;
     }).join('');
   }
 
-  window.markCompleted = async function(taskId) {
-    await updateDoc(doc(db,'tasks',taskId), { status:'Completed' });
+  window.markCompleted=async function(taskId){
+    await updateDoc(doc(db,'tasks',taskId),{status:'Completed'});
     showToast('✓ Task marked as completed','success');
   };
-  window.markPending = async function(taskId) {
-    await updateDoc(doc(db,'tasks',taskId), { status:'Pending' });
+  window.markPending=async function(taskId){
+    await updateDoc(doc(db,'tasks',taskId),{status:'Pending'});
     showToast('↩ Task moved back to pending','warn');
   };
+  window.logout=function(){ signOut(auth).then(()=>window.location.href='login.html'); };
 
-  window.logout = function() {
-    signOut(auth).then(() => window.location.href = 'login.html');
-  };
-
-  function showToast(msg, type) {
-    const wrap  = document.getElementById('toastWrap');
-    const toast = document.createElement('div');
-    toast.className = 'toast';
-    toast.style.background = type === 'success' ? '#059669' : '#D97706';
-    toast.textContent = msg;
+  function showToast(msg,type){
+    const wrap=document.getElementById('toastWrap');
+    const toast=document.createElement('div');
+    toast.className='toast';
+    toast.style.background=type==='success'?'#059669':'#D97706';
+    toast.textContent=msg;
     wrap.appendChild(toast);
-    setTimeout(() => toast.remove(), 3000);
+    setTimeout(()=>toast.remove(),3500);
   }
 </script>
 </body>
