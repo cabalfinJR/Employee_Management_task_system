@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Completed Tasks Report</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    :root{
+      --brand:#4F46E5;--brand-soft:#EEF2FF;--brand-mid:#818CF8;
+      --success:#059669;--success-soft:#D1FAE5;
+      --warn:#D97706;--warn-soft:#FEF3C7;
+      --danger:#DC2626;--danger-soft:#FEE2E2;
+      --text-1:#111827;--text-2:#6B7280;--text-3:#9CA3AF;
+      --bg:#F9FAFB;--surface:#FFFFFF;--border:#E5E7EB;
+      --radius:12px;--radius-sm:8px;
+    }
+    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text-1);min-height:100vh;}
+    nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 1.5rem;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;}
+    .nav-brand{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:17px;color:var(--brand);display:flex;align-items:center;gap:8px;}
+    .nav-right{display:flex;align-items:center;gap:10px;}
+    .nav-back{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:500;color:var(--text-2);background:var(--bg);padding:6px 14px;border-radius:var(--radius-sm);border:1px solid var(--border);text-decoration:none;transition:all 0.15s;}
+    .nav-back:hover{color:var(--brand);border-color:var(--brand);background:var(--brand-soft);}
+    .btn-export{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:500;color:white;background:var(--success);padding:6px 14px;border-radius:var(--radius-sm);border:none;cursor:pointer;transition:all 0.15s;}
+    .btn-export:hover{background:#047857;}
+    .page{max-width:1000px;margin:0 auto;padding:2rem 1.25rem 4rem;}
+
+    /* HERO */
+    .hero{background:var(--success);border-radius:var(--radius);padding:1.5rem 1.75rem;color:white;display:flex;align-items:center;justify-content:space-between;gap:1rem;margin-bottom:1.25rem;position:relative;overflow:hidden;}
+    .hero::before{content:'';position:absolute;right:-40px;top:-40px;width:200px;height:200px;background:rgba(255,255,255,0.06);border-radius:50%;}
+    .hero::after{content:'';position:absolute;right:60px;bottom:-60px;width:130px;height:130px;background:rgba(255,255,255,0.04);border-radius:50%;}
+    .hero-left{z-index:1;}
+    .hero-label{font-size:12px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;opacity:0.75;margin-bottom:4px;}
+    .hero-title{font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;margin-bottom:4px;}
+    .hero-sub{font-size:13px;opacity:0.8;}
+    .hero-stats{z-index:1;display:flex;gap:16px;flex-shrink:0;}
+    .hero-stat{background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);border-radius:var(--radius);padding:10px 16px;text-align:center;}
+    .hero-stat-val{font-family:'Space Grotesk',sans-serif;font-size:24px;font-weight:700;}
+    .hero-stat-lbl{font-size:11px;opacity:0.8;margin-top:2px;}
+
+    /* STATS STRIP */
+    .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:1.25rem;}
+    .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1rem 1.1rem;display:flex;align-items:center;gap:12px;transition:transform 0.15s,box-shadow 0.15s;}
+    .stat-card:hover{transform:translateY(-2px);box-shadow:0 4px 16px rgba(0,0,0,0.06);}
+    .stat-icon{width:40px;height:40px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+    .si-green{background:var(--success-soft);color:var(--success);}
+    .si-blue{background:var(--brand-soft);color:var(--brand);}
+    .si-amber{background:var(--warn-soft);color:var(--warn);}
+    .si-purple{background:#F3E8FF;color:#7C3AED;}
+    .stat-label{font-size:12px;color:var(--text-2);margin-bottom:2px;}
+    .stat-value{font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;}
+
+    /* FILTERS */
+    .filters-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1rem 1.25rem;margin-bottom:1.25rem;}
+    .filters-title{font-size:13px;font-weight:600;color:var(--text-2);margin-bottom:12px;display:flex;align-items:center;gap:6px;}
+    .filters-row{display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:10px;align-items:end;}
+    .filter-group{display:flex;flex-direction:column;gap:5px;}
+    .filter-label{font-size:11px;font-weight:600;color:var(--text-2);text-transform:uppercase;letter-spacing:0.05em;}
+    .filter-input{padding:8px 12px;font-size:13px;font-family:'Inter',sans-serif;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--bg);color:var(--text-1);outline:none;transition:border-color 0.15s;}
+    .filter-input:focus{border-color:var(--brand);}
+    .btn-clear{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:500;padding:8px 14px;background:var(--bg);color:var(--text-2);border:1px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;transition:all 0.15s;white-space:nowrap;}
+    .btn-clear:hover{color:var(--danger);border-color:var(--danger);}
+
+    /* RESULTS */
+    .results-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+    .results-count{font-size:13px;color:var(--text-2);}
+    .results-count strong{color:var(--text-1);}
+
+    /* EMPLOYEE GROUP */
+    .emp-group{margin-bottom:1.5rem;}
+    .emp-group-header{display:flex;align-items:center;gap:12px;margin-bottom:10px;padding:10px 14px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);cursor:pointer;transition:all 0.15s;user-select:none;}
+    .emp-group-header:hover{border-color:var(--brand-mid);background:var(--brand-soft);}
+    .emp-avatar{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:700;color:white;flex-shrink:0;}
+    .emp-name{font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:700;color:var(--text-1);}
+    .emp-email{font-size:12px;color:var(--text-2);}
+    .emp-count{margin-left:auto;background:var(--success-soft);color:var(--success);font-size:12px;font-weight:600;padding:3px 10px;border-radius:20px;}
+    .emp-toggle{font-size:16px;color:var(--text-3);transition:transform 0.2s;}
+    .emp-toggle.open{transform:rotate(180deg);}
+    .emp-tasks{display:flex;flex-direction:column;gap:8px;}
+
+    /* TASK ROW */
+    .task-row{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1rem 1.25rem;border-left:3px solid var(--success);animation:slideIn 0.25s ease both;transition:box-shadow 0.15s;}
+    @keyframes slideIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+    .task-row:hover{box-shadow:0 4px 16px rgba(5,150,105,0.08);}
+    .task-row-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:8px;}
+    .task-title{font-size:14px;font-weight:600;color:var(--text-1);}
+    .task-desc{font-size:13px;color:var(--text-2);line-height:1.5;margin-bottom:8px;}
+    .task-meta{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+    .badge-done{background:var(--success-soft);color:var(--success);font-size:11px;font-weight:500;padding:3px 10px;border-radius:20px;}
+    .pri{font-size:10px;font-weight:700;padding:2px 9px;border-radius:20px;text-transform:uppercase;}
+    .pri-low{background:#F0FDF4;color:#166534;}
+    .pri-medium{background:#EFF6FF;color:#1D4ED8;}
+    .pri-high{background:var(--warn-soft);color:var(--warn);}
+    .pri-urgent{background:var(--danger-soft);color:var(--danger);}
+    .due-chip{font-size:11px;font-weight:500;padding:2px 9px;border-radius:20px;display:inline-flex;align-items:center;gap:4px;background:#F0FDF4;color:#166534;}
+    .late-chip{background:var(--danger-soft);color:var(--danger);}
+
+    /* OUTPUT LINKS */
+    .task-links{margin-top:10px;border-top:1px solid var(--border);padding-top:10px;}
+    .links-label{font-size:11px;font-weight:600;color:var(--text-2);text-transform:uppercase;letter-spacing:0.04em;margin-bottom:6px;display:flex;align-items:center;gap:5px;}
+    .links-label i{color:var(--brand);font-size:13px;}
+    .link-pill{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:20px;font-size:12px;font-weight:500;text-decoration:none;border:1px solid var(--border);background:var(--bg);color:var(--text-1);transition:all 0.15s;margin:3px;}
+    .link-pill:hover{border-color:var(--brand);color:var(--brand);background:var(--brand-soft);}
+    .no-links{font-size:12px;color:var(--text-3);font-style:italic;}
+
+    /* EMPTY */
+    .empty{text-align:center;padding:4rem 1rem;color:var(--text-3);}
+    .empty i{font-size:48px;margin-bottom:14px;display:block;color:var(--success-soft);}
+    .empty h3{font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:700;color:var(--text-2);margin-bottom:6px;}
+    .empty p{font-size:13px;}
+
+    /* SKELETON */
+    .skeleton{background:linear-gradient(90deg,var(--border) 25%,var(--bg) 50%,var(--border) 75%);background-size:200% 100%;animation:shimmer 1.2s infinite;border-radius:var(--radius-sm);}
+    @keyframes shimmer{from{background-position:200% 0;}to{background-position:-200% 0;}}
+
+    /* TOAST */
+    .toast-wrap{position:fixed;bottom:24px;right:24px;z-index:999;display:flex;flex-direction:column;gap:8px;}
+    .toast{color:white;font-size:13px;font-weight:500;padding:10px 16px;border-radius:var(--radius-sm);display:flex;align-items:center;gap:8px;animation:toastIn 0.3s ease;}
+    @keyframes toastIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+
+    @media(max-width:700px){
+      .stats{grid-template-columns:1fr 1fr;}
+      .filters-row{grid-template-columns:1fr 1fr;}
+      .hero-stats{display:none;}
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-brand"><i class="ti ti-circle-check"></i> Completed Tasks</div>
+  <div class="nav-right">
+    <button class="btn-export" onclick="exportCSV()"><i class="ti ti-download"></i> Export CSV</button>
+    <a href="admin-dashboard.html" class="nav-back"><i class="ti ti-arrow-left"></i> Dashboard</a>
+  </div>
+</nav>
+
+<div class="page">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-left">
+      <div class="hero-label">Compilation report</div>
+      <div class="hero-title">Completed Tasks</div>
+      <div class="hero-sub">Full record of every task your team has finished</div>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="hero-stat-val" id="heroTotal">—</div>
+        <div class="hero-stat-lbl">Tasks done</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-val" id="heroEmployees">—</div>
+        <div class="hero-stat-lbl">Employees</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats">
+    <div class="stat-card">
+      <div class="stat-icon si-green"><i class="ti ti-circle-check"></i></div>
+      <div><div class="stat-label">Total completed</div><div class="stat-value" id="statTotal">—</div></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon si-blue"><i class="ti ti-users"></i></div>
+      <div><div class="stat-label">Employees</div><div class="stat-value" id="statEmployees">—</div></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon si-amber"><i class="ti ti-link"></i></div>
+      <div><div class="stat-label">Output links</div><div class="stat-value" id="statLinks">—</div></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon si-purple"><i class="ti ti-calendar"></i></div>
+      <div><div class="stat-label">This month</div><div class="stat-value" id="statMonth">—</div></div>
+    </div>
+  </div>
+
+  <!-- FILTERS -->
+  <div class="filters-card">
+    <div class="filters-title"><i class="ti ti-filter" style="color:var(--brand);"></i> Filter & search</div>
+    <div class="filters-row">
+      <div class="filter-group">
+        <div class="filter-label">Search task</div>
+        <input type="text" class="filter-input" id="fSearch" placeholder="Task title or description…" oninput="applyFilters()">
+      </div>
+      <div class="filter-group">
+        <div class="filter-label">Employee</div>
+        <select class="filter-input" id="fEmployee" onchange="applyFilters()">
+          <option value="">All employees</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <div class="filter-label">Priority</div>
+        <select class="filter-input" id="fPriority" onchange="applyFilters()">
+          <option value="">All priorities</option>
+          <option value="urgent">🔴 Urgent</option>
+          <option value="high">🟠 High</option>
+          <option value="medium">🔵 Medium</option>
+          <option value="low">🟢 Low</option>
+        </select>
+      </div>
+      <button class="btn-clear" onclick="clearFilters()"><i class="ti ti-x"></i> Clear</button>
+    </div>
+  </div>
+
+  <!-- RESULTS -->
+  <div class="results-header">
+    <div class="results-count" id="resultsCount">Loading…</div>
+  </div>
+
+  <div id="reportBody">
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <div class="skeleton" style="height:80px;"></div>
+      <div class="skeleton" style="height:80px;"></div>
+      <div class="skeleton" style="height:80px;"></div>
+    </div>
+  </div>
+
+</div>
+
+<div class="toast-wrap" id="toastWrap"></div>
+
+<script type="module">
+  import { app } from "./firebase-config.js";
+  import { getAuth, onAuthStateChanged }
+    from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import {
+    getFirestore, collection, query, where,
+    onSnapshot, getDocs
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  const auth = getAuth(app);
+  const db   = getFirestore(app);
+
+  let allCompleted = [];   // all completed tasks from Firestore
+  let allLinks     = {};   // map of taskId → [links]
+  let employees    = {};   // map of email → name
+
+  // ── AUTH GUARD (admin only) ──
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) { window.location.href = 'login.html'; return; }
+    const q    = query(collection(db,'users'), where('email','==',user.email));
+    const snap = await getDocs(q);
+    if (snap.empty) { window.location.href = 'login.html'; return; }
+    let role = ''; snap.forEach(d => { role = d.data().role; });
+    if (role !== 'admin') { window.location.href = 'employee-dashboard.html'; return; }
+    init();
+  });
+
+  async function init() {
+    // load employees for name lookup + dropdown
+    const empSnap = await getDocs(collection(db,'users'));
+    empSnap.forEach(d => {
+      const u = d.data();
+      if (u.role === 'employee') employees[u.email] = u.name || u.email;
+    });
+    populateEmployeeDropdown();
+
+    // live listener for completed tasks
+    const q = query(collection(db,'tasks'), where('status','==','Completed'));
+    onSnapshot(q, (snap) => {
+      allCompleted = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      updateStats();
+      applyFilters();
+    });
+
+    // live listener for all task links
+    onSnapshot(collection(db,'task_links'), (snap) => {
+      allLinks = {};
+      snap.forEach(d => {
+        const lk = { id: d.id, ...d.data() };
+        if (!allLinks[lk.taskId]) allLinks[lk.taskId] = [];
+        allLinks[lk.taskId].push(lk);
+      });
+      applyFilters();
+    });
+  }
+
+  function populateEmployeeDropdown() {
+    const sel = document.getElementById('fEmployee');
+    sel.innerHTML = '<option value="">All employees</option>';
+    Object.entries(employees).forEach(([email, name]) => {
+      sel.innerHTML += `<option value="${email}">${name} (${email})</option>`;
+    });
+  }
+
+  function updateStats() {
+    const total     = allCompleted.length;
+    const empSet    = new Set(allCompleted.map(t => t.assignedTo));
+    const thisMonth = new Date();
+    const monthCount= allCompleted.filter(t => {
+      if (!t.dueDate) return false;
+      const d = new Date(t.dueDate);
+      return d.getMonth() === thisMonth.getMonth() && d.getFullYear() === thisMonth.getFullYear();
+    }).length;
+    const linkCount = Object.values(allLinks).flat().length;
+
+    animNum('statTotal',     total);
+    animNum('statEmployees', empSet.size);
+    animNum('statLinks',     linkCount);
+    animNum('statMonth',     monthCount);
+    animNum('heroTotal',     total);
+    animNum('heroEmployees', empSet.size);
+  }
+
+  function animNum(id, target) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    let cur = parseInt(el.textContent) || 0;
+    if (cur === target) { el.textContent = target; return; }
+    const step = target > cur ? 1 : -1;
+    const iv = setInterval(() => { cur += step; el.textContent = cur; if (cur === target) clearInterval(iv); }, 40);
+  }
+
+  // ── FILTERS ──
+  window.applyFilters = function() {
+    const search   = document.getElementById('fSearch').value.toLowerCase().trim();
+    const employee = document.getElementById('fEmployee').value;
+    const priority = document.getElementById('fPriority').value;
+
+    let filtered = allCompleted;
+    if (search)   filtered = filtered.filter(t =>
+      (t.title||'').toLowerCase().includes(search) ||
+      (t.description||'').toLowerCase().includes(search)
+    );
+    if (employee) filtered = filtered.filter(t => t.assignedTo === employee);
+    if (priority) filtered = filtered.filter(t => t.priority === priority);
+
+    // sort: most recent due date first, then alphabetical
+    filtered.sort((a,b) => {
+      if (a.dueDate && b.dueDate) return new Date(b.dueDate) - new Date(a.dueDate);
+      if (a.dueDate) return -1;
+      if (b.dueDate) return 1;
+      return (a.title||'').localeCompare(b.title||'');
+    });
+
+    document.getElementById('resultsCount').innerHTML =
+      `Showing <strong>${filtered.length}</strong> of <strong>${allCompleted.length}</strong> completed tasks`;
+
+    renderReport(filtered);
+  };
+
+  window.clearFilters = function() {
+    document.getElementById('fSearch').value   = '';
+    document.getElementById('fEmployee').value = '';
+    document.getElementById('fPriority').value = '';
+    applyFilters();
+  };
+
+  // ── RENDER ──
+  function renderReport(tasks) {
+    const body = document.getElementById('reportBody');
+    if (tasks.length === 0) {
+      body.innerHTML = `
+        <div class="empty">
+          <i class="ti ti-clipboard-check"></i>
+          <h3>No completed tasks found</h3>
+          <p>Try adjusting your filters or check back once tasks are marked as completed.</p>
+        </div>`;
+      return;
+    }
+
+    // group by employee
+    const groups = {};
+    tasks.forEach(t => {
+      const key = t.assignedTo || 'Unknown';
+      if (!groups[key]) groups[key] = [];
+      groups[key].push(t);
+    });
+
+    const avatarColors = ['#4F46E5','#059669','#D97706','#DC2626','#0891B2','#7C3AED','#DB2777'];
+    function getColor(email) {
+      let h = 0; for (let c of email) h = c.charCodeAt(0) + ((h << 5) - h);
+      return avatarColors[Math.abs(h) % avatarColors.length];
+    }
+    function initials(email) {
+      const name = employees[email] || email;
+      return name.trim().split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase();
+    }
+
+    body.innerHTML = Object.entries(groups).map(([email, empTasks], gi) => {
+      const name  = employees[email] || email;
+      const color = getColor(email);
+      const init  = initials(email);
+
+      const taskRows = empTasks.map((task, ti) => {
+        const links   = allLinks[task.id] || [];
+        const pri     = task.priority;
+        const priMap  = {low:'pri-low',medium:'pri-medium',high:'pri-high',urgent:'pri-urgent'};
+        const priIcon = {low:'🟢',medium:'🔵',high:'🟠',urgent:'🔴'};
+        const priLabel= {low:'Low',medium:'Medium',high:'High',urgent:'Urgent'};
+
+        // was it completed on time?
+        const wasLate = task.dueDate
+          ? false  // we don't store completion date yet, just show due date
+          : false;
+
+        return `
+          <div class="task-row" style="animation-delay:${ti*0.04}s">
+            <div class="task-row-top">
+              <div>
+                <div class="task-title">${task.title || 'Untitled'}</div>
+              </div>
+              <div style="display:flex;gap:6px;align-items:center;flex-shrink:0;">
+                <span class="badge-done"><i class="ti ti-check" style="font-size:10px;"></i> Completed</span>
+              </div>
+            </div>
+            ${task.description?`<div class="task-desc">${task.description}</div>`:''}
+            <div class="task-meta">
+              ${pri ? `<span class="pri ${priMap[pri]||'pri-medium'}">${priIcon[pri]||'🔵'} ${priLabel[pri]||'Medium'}</span>` : ''}
+              ${task.dueDate ? `<span class="due-chip ${wasLate?'late-chip':''}"><i class="ti ti-calendar" style="font-size:10px;"></i> Due ${fmtDate(task.dueDate)}</span>` : ''}
+            </div>
+            ${links.length > 0 ? `
+              <div class="task-links">
+                <div class="links-label"><i class="ti ti-link"></i> Output links (${links.length})</div>
+                <div>
+                  ${links.map(lk => {
+                    const pl = detectPlatform(lk.url);
+                    return `<a href="${lk.url}" target="_blank" rel="noopener" class="link-pill">
+                      <i class="${pl.icon}" style="color:${pl.color};font-size:14px;"></i>
+                      ${lk.label || pl.name}
+                      <i class="ti ti-external-link" style="font-size:11px;color:var(--text-3);"></i>
+                    </a>`;
+                  }).join('')}
+                </div>
+              </div>` : `
+              <div class="task-links">
+                <div class="links-label"><i class="ti ti-link"></i> Output links</div>
+                <div class="no-links">No output links submitted</div>
+              </div>`}
+          </div>`;
+      }).join('');
+
+      return `
+        <div class="emp-group">
+          <div class="emp-group-header" onclick="toggleGroup('grp-${gi}',this)">
+            <div class="emp-avatar" style="background:${color};">${init}</div>
+            <div>
+              <div class="emp-name">${name}</div>
+              <div class="emp-email">${email}</div>
+            </div>
+            <span class="emp-count">${empTasks.length} task${empTasks.length!==1?'s':''} done</span>
+            <i class="ti ti-chevron-down emp-toggle open"></i>
+          </div>
+          <div class="emp-tasks" id="grp-${gi}">${taskRows}</div>
+        </div>`;
+    }).join('');
+  }
+
+  window.toggleGroup = function(id, header) {
+    const el     = document.getElementById(id);
+    const toggle = header.querySelector('.emp-toggle');
+    if (el.style.display === 'none') {
+      el.style.display = 'flex';
+      toggle.classList.add('open');
+    } else {
+      el.style.display = 'none';
+      toggle.classList.remove('open');
+    }
+  };
+
+  // ── HELPERS ──
+  function fmtDate(s) {
+    if (!s) return '';
+    return new Date(s).toLocaleDateString([],{month:'short',day:'numeric',year:'numeric'});
+  }
+
+  function detectPlatform(url) {
+    try {
+      const h = new URL(url).hostname.toLowerCase();
+      if (h.includes('drive.google'))  return {name:'Google Drive',icon:'ti ti-brand-google-drive',color:'#1FA463'};
+      if (h.includes('docs.google'))   return {name:'Google Docs', icon:'ti ti-file-text',          color:'#1A73E8'};
+      if (h.includes('onedrive')||h.includes('1drv')) return {name:'OneDrive',icon:'ti ti-brand-onedrive',color:'#0078D4'};
+      if (h.includes('dropbox'))       return {name:'Dropbox',     icon:'ti ti-brand-dropbox',       color:'#0061FF'};
+      if (h.includes('github'))        return {name:'GitHub',      icon:'ti ti-brand-github',        color:'#24292E'};
+      if (h.includes('figma'))         return {name:'Figma',       icon:'ti ti-brand-figma',         color:'#F24E1E'};
+      if (h.includes('notion'))        return {name:'Notion',      icon:'ti ti-notebook',            color:'#191919'};
+      if (h.includes('youtube')||h.includes('youtu.be')) return {name:'YouTube',icon:'ti ti-brand-youtube',color:'#FF0000'};
+    } catch(e) {}
+    return {name:'Link', icon:'ti ti-link', color:'var(--brand)'};
+  }
+
+  // ── EXPORT CSV ──
+  window.exportCSV = function() {
+    if (!allCompleted.length) { showToast('No completed tasks to export','warn'); return; }
+
+    const search   = document.getElementById('fSearch').value.toLowerCase();
+    const employee = document.getElementById('fEmployee').value;
+    const priority = document.getElementById('fPriority').value;
+
+    let filtered = allCompleted;
+    if (search)   filtered = filtered.filter(t => (t.title||'').toLowerCase().includes(search)||(t.description||'').toLowerCase().includes(search));
+    if (employee) filtered = filtered.filter(t => t.assignedTo===employee);
+    if (priority) filtered = filtered.filter(t => t.priority===priority);
+
+    const rows = [
+      ['Task Title','Description','Assigned To','Employee Name','Priority','Due Date','Status','Output Links']
+    ];
+    filtered.forEach(t => {
+      const links = (allLinks[t.id]||[]).map(lk => lk.label ? `${lk.label}: ${lk.url}` : lk.url).join(' | ');
+      rows.push([
+        t.title||'',
+        (t.description||'').replace(/,/g,' '),
+        t.assignedTo||'',
+        employees[t.assignedTo]||'',
+        t.priority||'',
+        t.dueDate||'',
+        'Completed',
+        links
+      ]);
+    });
+
+    const csv  = rows.map(r => r.map(v => `"${v}"`).join(',')).join('\n');
+    const blob = new Blob([csv], {type:'text/csv'});
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href     = url;
+    a.download = `completed-tasks-${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast('✓ CSV exported!','success');
+  };
+
+  function showToast(msg,type){
+    const wrap=document.getElementById('toastWrap');
+    const toast=document.createElement('div');
+    toast.className='toast';
+    toast.style.background=type==='success'?'#059669':type==='danger'?'#DC2626':'#D97706';
+    toast.textContent=msg;
+    wrap.appendChild(toast);
+    setTimeout(()=>toast.remove(),3000);
+  }
+</script>
+</body>
+</html>
