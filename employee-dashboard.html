@@ -30,8 +30,6 @@
     .btn-logout{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:500;color:var(--text-2);background:transparent;border:1px solid var(--border);border-radius:var(--radius-sm);padding:6px 14px;cursor:pointer;transition:all 0.15s;}
     .btn-logout:hover{background:var(--bg);color:var(--danger);border-color:var(--danger);}
     .page{max-width:860px;margin:0 auto;padding:2rem 1.25rem 4rem;}
-
-    /* ALERTS */
     .alert-stack{display:flex;flex-direction:column;gap:8px;margin-bottom:1.25rem;}
     .alert{border-radius:var(--radius);padding:14px 18px;display:flex;align-items:flex-start;gap:12px;animation:slideDown 0.4s ease both;}
     @keyframes slideDown{from{opacity:0;transform:translateY(-10px);}to{opacity:1;transform:translateY(0);}}
@@ -48,8 +46,6 @@
     .alert-tasks li{font-size:13px;color:var(--text-1);display:flex;align-items:center;gap:6px;}
     .alert-dismiss{background:none;border:none;cursor:pointer;font-size:16px;color:var(--text-3);padding:0;flex-shrink:0;transition:color 0.15s;}
     .alert-dismiss:hover{color:var(--text-1);}
-
-    /* HERO */
     .hero{background:var(--brand);border-radius:var(--radius);padding:1.5rem 1.75rem;color:white;display:flex;align-items:center;justify-content:space-between;gap:1rem;margin-bottom:1.25rem;position:relative;overflow:hidden;}
     .hero::before{content:'';position:absolute;right:-40px;top:-40px;width:180px;height:180px;background:rgba(255,255,255,0.06);border-radius:50%;}
     .hero::after{content:'';position:absolute;right:40px;bottom:-50px;width:120px;height:120px;background:rgba(255,255,255,0.04);border-radius:50%;}
@@ -58,8 +54,6 @@
     .hero-name{font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;margin-bottom:4px;}
     .hero-sub{font-size:13px;opacity:0.8;}
     .hero-avatar{width:56px;height:56px;border-radius:50%;background:rgba(255,255,255,0.18);border:2px solid rgba(255,255,255,0.35);display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:700;flex-shrink:0;z-index:1;}
-
-    /* STATS */
     .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:1.25rem;}
     .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1rem 1.1rem;display:flex;align-items:center;gap:12px;transition:transform 0.15s;}
     .stat-card:hover{transform:translateY(-2px);}
@@ -70,14 +64,11 @@
     .stat-icon.red{background:var(--danger-soft);color:var(--danger);}
     .stat-label{font-size:12px;color:var(--text-2);margin-bottom:2px;}
     .stat-value{font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;color:var(--text-1);}
-
     .section-title{font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:700;color:var(--text-1);display:flex;align-items:center;gap:8px;margin-bottom:12px;}
     .section-title i{font-size:18px;color:var(--brand);}
     .filter-row{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;}
     .filter-btn{font-size:12px;font-weight:500;padding:5px 14px;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--text-2);cursor:pointer;transition:all 0.15s;}
     .filter-btn.active,.filter-btn:hover{background:var(--brand);color:white;border-color:var(--brand);}
-
-    /* TASK CARDS */
     #taskList{display:flex;flex-direction:column;gap:12px;}
     .task-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1rem 1.25rem;transition:box-shadow 0.2s,transform 0.15s;animation:slideIn 0.3s ease both;}
     @keyframes slideIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
@@ -98,6 +89,7 @@
     .badge{font-size:11px;font-weight:500;padding:3px 10px;border-radius:20px;}
     .badge-pending{background:var(--brand-soft);color:var(--brand);}
     .badge-completed{background:var(--success-soft);color:var(--success);}
+    /* priority badges — hidden once output submitted */
     .pri{font-size:10px;font-weight:700;padding:2px 9px;border-radius:20px;text-transform:uppercase;letter-spacing:0.04em;}
     .pri-low{background:#F0FDF4;color:#166534;}
     .pri-medium{background:#EFF6FF;color:#1D4ED8;}
@@ -107,39 +99,35 @@
     .due-ok{background:#F0FDF4;color:#166534;}
     .due-soon{background:var(--warn-soft);color:var(--warn);}
     .due-overdue{background:var(--danger-soft);color:var(--danger);}
+    /* submission timing badge */
+    .sub-timing{font-size:11px;font-weight:600;display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;}
+    .sub-early{background:#D1FAE5;color:#065F46;}
+    .sub-late {background:#FEE2E2;color:#991B1B;}
+    .sub-ontime{background:#EFF6FF;color:#1D4ED8;}
     .task-action{margin-left:auto;font-size:12px;font-weight:500;padding:5px 14px;border-radius:var(--radius-sm);border:none;cursor:pointer;transition:all 0.15s;}
     .btn-complete{background:var(--success-soft);color:var(--success);}
     .btn-complete:hover{background:var(--success);color:white;}
     .btn-pending{background:var(--bg);color:var(--text-2);border:1px solid var(--border);}
     .btn-pending:hover{background:var(--warn-soft);color:var(--warn);border-color:var(--warn);}
-
-    /* ── OUTPUT LINKS SECTION ── */
+    /* OUTPUT LINKS */
     .task-outputs{margin-top:12px;border-top:1px solid var(--border);padding-top:12px;}
     .outputs-label{font-size:12px;font-weight:600;color:var(--text-2);text-transform:uppercase;letter-spacing:0.04em;display:flex;align-items:center;gap:6px;margin-bottom:10px;}
     .outputs-label i{color:var(--brand);font-size:14px;}
-
-    /* info hint */
     .output-hint{font-size:12px;color:var(--text-3);margin-bottom:10px;display:flex;align-items:center;gap:6px;}
     .output-hint i{font-size:14px;color:var(--brand-mid);}
-
-    /* link submission row */
-    .link-form{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;}
-    .link-input-wrap{flex:1;min-width:0;position:relative;}
+    .link-form{display:flex;flex-direction:column;gap:6px;margin-bottom:10px;}
+    .link-input-wrap{position:relative;}
     .link-input{width:100%;padding:8px 12px 8px 34px;font-size:13px;font-family:'Inter',sans-serif;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--bg);color:var(--text-1);outline:none;transition:border-color 0.15s,box-shadow 0.15s;}
     .link-input:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(79,70,229,0.1);}
     .link-input-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:15px;color:var(--text-3);pointer-events:none;}
-    .link-label-input{width:100%;padding:8px 12px;font-size:13px;font-family:'Inter',sans-serif;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--bg);color:var(--text-1);outline:none;transition:border-color 0.15s,box-shadow 0.15s;margin-top:6px;}
-    .link-label-input:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(79,70,229,0.1);}
-    .btn-add-link{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:8px 14px;background:var(--brand);color:white;border:none;border-radius:var(--radius-sm);cursor:pointer;white-space:nowrap;transition:all 0.15s;margin-top:6px;}
-    .btn-add-link:hover{background:#4338CA;}
-    .btn-add-link:disabled{opacity:0.6;cursor:not-allowed;}
-
-    /* platform chips */
-    .platform-chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;}
+    .link-label-input{width:100%;padding:8px 12px;font-size:13px;font-family:'Inter',sans-serif;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--bg);color:var(--text-1);outline:none;transition:border-color 0.15s;}
+    .link-label-input:focus{border-color:var(--brand);}
+    .platform-chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;}
     .chip{font-size:11px;font-weight:500;padding:3px 10px;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--text-2);cursor:pointer;transition:all 0.15s;display:flex;align-items:center;gap:4px;}
     .chip:hover{border-color:var(--brand);color:var(--brand);background:var(--brand-soft);}
-
-    /* submitted links list */
+    .btn-add-link{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:8px 14px;background:var(--brand);color:white;border:none;border-radius:var(--radius-sm);cursor:pointer;transition:all 0.15s;}
+    .btn-add-link:hover{background:#4338CA;}
+    .btn-add-link:disabled{opacity:0.6;cursor:not-allowed;}
     .links-list{display:flex;flex-direction:column;gap:6px;}
     .link-item{display:flex;align-items:center;gap:10px;padding:9px 12px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);transition:all 0.15s;animation:fadeIn 0.3s ease;}
     @keyframes fadeIn{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
@@ -148,14 +136,13 @@
     .link-info{flex:1;min-width:0;}
     .link-name{font-size:13px;font-weight:500;color:var(--text-1);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
     .link-url{font-size:11px;color:var(--text-3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-    .link-meta{font-size:11px;color:var(--text-3);margin-top:1px;}
+    .link-meta{font-size:11px;color:var(--text-3);margin-top:2px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
     .link-actions{display:flex;gap:6px;flex-shrink:0;}
     .link-btn{width:28px;height:28px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface);color:var(--text-2);display:flex;align-items:center;justify-content:center;font-size:13px;cursor:pointer;transition:all 0.15s;text-decoration:none;}
     .link-btn:hover{transform:scale(1.1);}
     .link-btn.open:hover{background:var(--success-soft);color:var(--success);border-color:var(--success);}
     .link-btn.remove:hover{background:var(--danger-soft);color:var(--danger);border-color:var(--danger);}
-    .no-links{font-size:12px;color:var(--text-3);text-align:center;padding:10px 0;font-style:italic;}
-
+    .no-links{font-size:12px;color:var(--text-3);text-align:center;padding:8px 0;font-style:italic;}
     .empty{text-align:center;padding:3rem 1rem;color:var(--text-3);}
     .empty i{font-size:40px;margin-bottom:12px;display:block;}
     .empty p{font-size:14px;}
@@ -164,7 +151,7 @@
     @keyframes toastIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
     .skeleton{background:linear-gradient(90deg,var(--border) 25%,var(--bg) 50%,var(--border) 75%);background-size:200% 100%;animation:shimmer 1.2s infinite;border-radius:var(--radius-sm);}
     @keyframes shimmer{from{background-position:200% 0;}to{background-position:-200% 0;}}
-    @media(max-width:600px){.stats{grid-template-columns:1fr 1fr;}.hero{flex-direction:column;align-items:flex-start;}.link-form{flex-direction:column;}}
+    @media(max-width:600px){.stats{grid-template-columns:1fr 1fr;}.hero{flex-direction:column;align-items:flex-start;}}
   </style>
 </head>
 <body>
@@ -238,7 +225,7 @@
   import {
     getFirestore, collection, query, where,
     onSnapshot, doc, updateDoc, getDocs,
-    addDoc, deleteDoc, serverTimestamp
+    addDoc, deleteDoc, serverTimestamp, Timestamp
   } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
   const auth = getAuth(app);
@@ -246,7 +233,6 @@
 
   const today    = new Date(); today.setHours(0,0,0,0);
   const tomorrow = new Date(today); tomorrow.setDate(tomorrow.getDate()+1);
-
   let currentUserEmail = '';
 
   // ── CLOCK ──
@@ -267,7 +253,6 @@
     if(snap.empty){window.location.href='login.html';return;}
     let role=''; snap.forEach(d=>{role=d.data().role;});
     if(role!=='employee'){window.location.href='admin-dashboard.html';return;}
-
     currentUserEmail=user.email;
     const emailPart=user.email.split('@')[0];
     const name=emailPart.charAt(0).toUpperCase()+emailPart.slice(1);
@@ -302,11 +287,50 @@
     if(isDueSoon(t))    return `<span class="due due-soon"><i class="ti ti-clock" style="font-size:11px;"></i> Due soon · ${fmtDate(t.dueDate)}</span>`;
     return `<span class="due due-ok"><i class="ti ti-calendar" style="font-size:11px;"></i> Due ${fmtDate(t.dueDate)}</span>`;
   }
-  function priBadge(p){
+  function priBadge(p, hasOutput){
+    // ✅ Hide priority badge once output is submitted
+    if(hasOutput) return '';
     const map  ={low:'pri-low',medium:'pri-medium',high:'pri-high',urgent:'pri-urgent'};
     const label={low:'Low',medium:'Medium',high:'High',urgent:'Urgent'};
     const icon ={low:'🟢',medium:'🔵',high:'🟠',urgent:'🔴'};
     return `<span class="pri ${map[p]||'pri-medium'}">${icon[p]||'🔵'} ${label[p]||'Medium'}</span>`;
+  }
+
+  // ── SUBMISSION TIMING ──
+  // Calculates how early or late the output was submitted vs due date
+  function calcTiming(dueDate, submittedAt) {
+    if (!dueDate || !submittedAt) return null;
+
+    // due date: end of that day (23:59:59)
+    const due = new Date(dueDate);
+    due.setHours(23, 59, 59, 999);
+
+    const submitted = submittedAt.toDate ? submittedAt.toDate() : new Date(submittedAt);
+    const diffMs = submitted - due; // positive = late, negative = early
+    const absDiffMs = Math.abs(diffMs);
+
+    const days    = Math.floor(absDiffMs / (1000*60*60*24));
+    const hours   = Math.floor((absDiffMs % (1000*60*60*24)) / (1000*60*60));
+    const minutes = Math.floor((absDiffMs % (1000*60*60)) / (1000*60));
+
+    let timeStr = '';
+    if (days > 0)    timeStr += `${days}d `;
+    if (hours > 0)   timeStr += `${hours}h `;
+    timeStr += `${minutes}m`;
+    timeStr = timeStr.trim() || '< 1m';
+
+    if (diffMs > 0) {
+      return { type: 'late',   label: `Submitted ${timeStr} late`,  cls: 'sub-late',   icon: 'ti-clock-x' };
+    } else if (diffMs < 0) {
+      return { type: 'early',  label: `Submitted ${timeStr} early`, cls: 'sub-early',  icon: 'ti-clock-check' };
+    } else {
+      return { type: 'ontime', label: 'Submitted on time',          cls: 'sub-ontime', icon: 'ti-check' };
+    }
+  }
+
+  function timingBadge(timing) {
+    if (!timing) return '';
+    return `<span class="sub-timing ${timing.cls}"><i class="ti ${timing.icon}" style="font-size:11px;"></i> ${timing.label}</span>`;
   }
 
   // ── PLATFORM DETECTION ──
@@ -320,7 +344,6 @@
       if(h.includes('github'))        return {name:'GitHub',      icon:'ti ti-brand-github',        color:'#24292E',bg:'#F0F0F0'};
       if(h.includes('figma'))         return {name:'Figma',       icon:'ti ti-brand-figma',         color:'#F24E1E',bg:'#FEF0EC'};
       if(h.includes('notion'))        return {name:'Notion',      icon:'ti ti-notebook',            color:'#191919',bg:'#F5F5F5'};
-      if(h.includes('youtube')||h.includes('youtu.be')) return {name:'YouTube',icon:'ti ti-brand-youtube',color:'#FF0000',bg:'#FFF0F0'};
     }catch(e){}
     return {name:'Link',icon:'ti ti-link',color:'var(--brand)',bg:'var(--brand-soft)'};
   }
@@ -354,7 +377,7 @@
         <div class="alert-icon"><i class="ti ti-clock"></i></div>
         <div class="alert-body">
           <div class="alert-title">⏰ ${dueTomrow.length>1?'These tasks are':'This task is'} due tomorrow!</div>
-          <ul class="alert-tasks">${dueTomrow.map(t=>`<li><i class="ti ti-point-filled" style="color:var(--warn);"></i><strong>${t.title}</strong>${t.priority==='urgent'?' 🔴 Urgent':t.priority==='high'?' 🟠 High':''}</li>`).join('')}</ul>
+          <ul class="alert-tasks">${dueTomrow.map(t=>`<li><i class="ti ti-point-filled" style="color:var(--warn);"></i><strong>${t.title}</strong></li>`).join('')}</ul>
         </div>
         <button class="alert-dismiss" onclick="this.closest('.alert').remove()"><i class="ti ti-x"></i></button>`;
       stack.appendChild(el);
@@ -369,7 +392,7 @@
   };
 
   // ── FILTER ──
-  let currentFilter='all', allTasks=[];
+  let currentFilter='all', allTasks=[], linksMap={};
   window.setFilter=function(f,btn){
     currentFilter=f;
     document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
@@ -378,10 +401,22 @@
   };
 
   function loadTasks(email){
+    // live tasks listener
     const q=query(collection(db,'tasks'),where('assignedTo','==',email));
     onSnapshot(q,(snap)=>{
       allTasks=snap.docs.map(d=>({id:d.id,...d.data()}));
       updateStats(); buildAlerts(allTasks); renderTasks();
+    });
+    // live links listener — to know which tasks have outputs
+    const lq=query(collection(db,'task_links'),where('submittedBy','==',email));
+    onSnapshot(lq,(snap)=>{
+      linksMap={};
+      snap.forEach(d=>{
+        const lk={id:d.id,...d.data()};
+        if(!linksMap[lk.taskId]) linksMap[lk.taskId]=[];
+        linksMap[lk.taskId].push(lk);
+      });
+      renderTasks();
     });
   }
 
@@ -426,10 +461,25 @@
     });
 
     list.innerHTML=sorted.map((task,i)=>{
-      const done=task.status==='Completed';
-      const over=isOverdue(task);
-      const soon=isDueSoon(task)&&!over;
-      const cls =done?'completed':over?'overdue':soon?'due-soon':'pending';
+      const done   =task.status==='Completed';
+      const over   =isOverdue(task);
+      const soon   =isDueSoon(task)&&!over;
+      const cls    =done?'completed':over?'overdue':soon?'due-soon':'pending';
+      const links  =linksMap[task.id]||[];
+      const hasOutput=links.length>0;
+
+      // timing: use the earliest submission timestamp
+      let timingHtml='';
+      if(hasOutput && task.dueDate){
+        const earliest=links.reduce((a,b)=>{
+          const at=a.submittedAt?.seconds||0;
+          const bt=b.submittedAt?.seconds||0;
+          return at<bt?a:b;
+        });
+        const timing=calcTiming(task.dueDate, earliest.submittedAt);
+        timingHtml=timingBadge(timing);
+      }
+
       return `
         <div class="task-card ${cls}" style="animation-delay:${i*0.05}s" id="card-${task.id}">
           <div class="task-top">
@@ -441,8 +491,9 @@
               <div class="task-desc">${task.description||''}</div>
               <div class="task-footer">
                 <span class="badge ${done?'badge-completed':'badge-pending'}">${done?'Completed':'Pending'}</span>
-                ${task.priority?priBadge(task.priority):''}
+                ${task.priority&&!hasOutput?priBadge(task.priority,false):''}
                 ${dueBadge(task)}
+                ${timingHtml}
                 ${done
                   ?`<button class="task-action btn-pending" onclick="markPending('${task.id}')"><i class="ti ti-refresh" style="font-size:12px;vertical-align:-1px;"></i> Mark pending</button>`
                   :`<button class="task-action btn-complete" onclick="markCompleted('${task.id}')"><i class="ti ti-check" style="font-size:12px;vertical-align:-1px;"></i> Mark complete</button>`}
@@ -450,142 +501,94 @@
             </div>
           </div>
 
-          <!-- ✅ OUTPUT LINKS SECTION -->
+          <!-- OUTPUT LINKS -->
           <div class="task-outputs">
-            <div class="outputs-label">
-              <i class="ti ti-link"></i> Output links
-            </div>
-
-            <div class="output-hint">
-              <i class="ti ti-info-circle"></i>
-              Upload your output to Google Drive, OneDrive, Dropbox, etc. then paste the share link below.
-            </div>
-
-            <!-- quick platform chips -->
+            <div class="outputs-label"><i class="ti ti-link"></i> Output links ${hasOutput?`<span style="background:var(--success-soft);color:var(--success);font-size:10px;padding:1px 7px;border-radius:20px;font-weight:700;">${links.length} submitted</span>`:''}</div>
+            ${!hasOutput?`<div class="output-hint"><i class="ti ti-info-circle"></i> Upload your output to Google Drive or similar, then paste the share link below.</div>`:''}
             <div class="platform-chips">
-              <div class="chip" onclick="fillLink('${task.id}','https://drive.google.com/')">
-                <i class="ti ti-brand-google-drive"></i> Google Drive
-              </div>
-              <div class="chip" onclick="fillLink('${task.id}','https://onedrive.live.com/')">
-                <i class="ti ti-brand-onedrive"></i> OneDrive
-              </div>
-              <div class="chip" onclick="fillLink('${task.id}','https://www.dropbox.com/')">
-                <i class="ti ti-brand-dropbox"></i> Dropbox
-              </div>
-              <div class="chip" onclick="fillLink('${task.id}','https://github.com/')">
-                <i class="ti ti-brand-github"></i> GitHub
-              </div>
-              <div class="chip" onclick="fillLink('${task.id}','https://www.figma.com/')">
-                <i class="ti ti-brand-figma"></i> Figma
-              </div>
+              <div class="chip" onclick="fillLink('${task.id}','https://drive.google.com/')"><i class="ti ti-brand-google-drive"></i> Google Drive</div>
+              <div class="chip" onclick="fillLink('${task.id}','https://onedrive.live.com/')"><i class="ti ti-brand-onedrive"></i> OneDrive</div>
+              <div class="chip" onclick="fillLink('${task.id}','https://www.dropbox.com/')"><i class="ti ti-brand-dropbox"></i> Dropbox</div>
+              <div class="chip" onclick="fillLink('${task.id}','https://github.com/')"><i class="ti ti-brand-github"></i> GitHub</div>
             </div>
-
-            <!-- link input -->
             <div class="link-form">
-              <div style="flex:1;display:flex;flex-direction:column;gap:6px;">
-                <div class="link-input-wrap">
-                  <i class="ti ti-link link-input-icon"></i>
-                  <input type="url" class="link-input" id="url-${task.id}"
-                    placeholder="Paste your share link here (e.g. https://drive.google.com/…)"
-                    oninput="previewPlatform('${task.id}')">
-                </div>
-                <input type="text" class="link-label-input" id="label-${task.id}"
-                  placeholder="Label (optional) e.g. 'Final Report v2'">
-                <button class="btn-add-link" onclick="submitLink('${task.id}')">
-                  <i class="ti ti-plus"></i> Add link
-                </button>
+              <div class="link-input-wrap">
+                <i class="ti ti-link link-input-icon"></i>
+                <input type="url" class="link-input" id="url-${task.id}" placeholder="Paste share link here…">
               </div>
+              <input type="text" class="link-label-input" id="label-${task.id}" placeholder="Label (optional) e.g. Final Report v2">
+              <button class="btn-add-link" onclick="submitLink('${task.id}','${task.dueDate||''}')">
+                <i class="ti ti-plus"></i> Add link
+              </button>
             </div>
-
-            <!-- submitted links -->
             <div class="links-list" id="links-${task.id}">
-              <div class="no-links">No output links yet</div>
+              ${renderLinks(links, task.dueDate)}
             </div>
           </div>
         </div>`;
     }).join('');
-
-    // load existing links for each task
-    sorted.forEach(task=>loadLinks(task.id));
   }
 
-  // ── PLATFORM CHIP FILL ──
+  function renderLinks(links, dueDate){
+    if(!links.length) return '<div class="no-links">No output links yet</div>';
+    return links.map(lk=>{
+      const pl=detectPlatform(lk.url);
+      const ts=lk.submittedAt
+        ?new Date(lk.submittedAt.seconds*1000).toLocaleString([],{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'})
+        :'just now';
+      const timing=dueDate&&lk.submittedAt?calcTiming(dueDate,lk.submittedAt):null;
+      return `
+        <div class="link-item">
+          <div class="link-platform-icon" style="background:${pl.bg};color:${pl.color};"><i class="${pl.icon}"></i></div>
+          <div class="link-info">
+            <div class="link-name">${lk.label||pl.name}</div>
+            <div class="link-url">${lk.url}</div>
+            <div class="link-meta">
+              ${pl.name} · ${ts}
+              ${timing?`· ${timingBadge(timing)}`:''}
+            </div>
+          </div>
+          <div class="link-actions">
+            <a href="${lk.url}" target="_blank" rel="noopener" class="link-btn open" title="Open"><i class="ti ti-external-link"></i></a>
+            <button class="link-btn remove" title="Remove" onclick="removeLink('${lk.id}')"><i class="ti ti-trash"></i></button>
+          </div>
+        </div>`;
+    }).join('');
+  }
+
   window.fillLink=function(taskId,url){
     const input=document.getElementById('url-'+taskId);
-    if(input){ input.value=url; input.focus(); }
+    if(input){input.value=url;input.focus();}
   };
 
-  // ── PREVIEW PLATFORM (updates link icon on type) ──
-  window.previewPlatform=function(taskId){
-    // just keeps focus — visual feedback happens on submit
-  };
-
-  // ── LOAD LINKS ──
-  function loadLinks(taskId){
-    const q=query(
-      collection(db,'task_links'),
-      where('taskId','==',taskId),
-      where('submittedBy','==',currentUserEmail)
-    );
-    onSnapshot(q,(snap)=>{
-      const container=document.getElementById('links-'+taskId);
-      if(!container) return;
-      if(snap.empty){
-        container.innerHTML='<div class="no-links">No output links yet</div>';
-        return;
-      }
-      const links=snap.docs.map(d=>({id:d.id,...d.data()}));
-      links.sort((a,b)=>(b.submittedAt?.seconds||0)-(a.submittedAt?.seconds||0));
-      container.innerHTML=links.map(lk=>{
-        const pl=detectPlatform(lk.url);
-        const ts=lk.submittedAt
-          ?new Date(lk.submittedAt.seconds*1000).toLocaleDateString([],{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'})
-          :'just now';
-        return `
-          <div class="link-item">
-            <div class="link-platform-icon" style="background:${pl.bg};color:${pl.color};">
-              <i class="${pl.icon}"></i>
-            </div>
-            <div class="link-info">
-              <div class="link-name">${lk.label||pl.name}</div>
-              <div class="link-url">${lk.url}</div>
-              <div class="link-meta">${pl.name} · ${ts}</div>
-            </div>
-            <div class="link-actions">
-              <a href="${lk.url}" target="_blank" rel="noopener" class="link-btn open" title="Open link">
-                <i class="ti ti-external-link"></i>
-              </a>
-              <button class="link-btn remove" title="Remove" onclick="removeLink('${lk.id}')">
-                <i class="ti ti-trash"></i>
-              </button>
-            </div>
-          </div>`;
-      }).join('');
-    });
-  }
-
-  // ── SUBMIT LINK ──
-  window.submitLink=async function(taskId){
+  window.submitLink=async function(taskId, dueDate){
     const urlInput  =document.getElementById('url-'+taskId);
     const labelInput=document.getElementById('label-'+taskId);
     const url  =(urlInput?.value||'').trim();
     const label=(labelInput?.value||'').trim();
-
-    if(!url){ showToast('Please paste a link first','warn'); return; }
-
-    // basic URL validation
-    try{ new URL(url); } catch(e){ showToast('Please enter a valid URL (include https://)','warn'); return; }
+    if(!url){showToast('Please paste a link first','warn');return;}
+    try{new URL(url);}catch(e){showToast('Please enter a valid URL (include https://)','warn');return;}
 
     const btn=urlInput.closest('.task-outputs').querySelector('.btn-add-link');
-    if(btn){ btn.disabled=true; btn.textContent='Adding…'; }
+    if(btn){btn.disabled=true;btn.textContent='Adding…';}
 
     try{
+      const now=Timestamp.now();
+      // calculate timing at submission time
+      let timingNote='';
+      if(dueDate){
+        const timing=calcTiming(dueDate,now);
+        if(timing) timingNote=timing.label;
+      }
+
       await addDoc(collection(db,'task_links'),{
         taskId,
         url,
-        label: label||'',
-        submittedBy: currentUserEmail,
-        submittedAt: serverTimestamp()
+        label:label||'',
+        submittedBy:currentUserEmail,
+        submittedAt:now,
+        dueDate:dueDate||'',
+        timingNote  // stored in Firestore for admin reports
       });
       if(urlInput)   urlInput.value='';
       if(labelInput) labelInput.value='';
@@ -593,17 +596,16 @@
     }catch(err){
       showToast('Error: '+err.message,'danger');
     }finally{
-      if(btn){ btn.disabled=false; btn.innerHTML='<i class="ti ti-plus"></i> Add link'; }
+      if(btn){btn.disabled=false;btn.innerHTML='<i class="ti ti-plus"></i> Add link';}
     }
   };
 
-  // ── REMOVE LINK ──
   window.removeLink=async function(linkId){
     if(!confirm('Remove this output link?')) return;
     try{
       await deleteDoc(doc(db,'task_links',linkId));
       showToast('🗑 Link removed','danger');
-    }catch(err){ showToast('Error: '+err.message,'danger'); }
+    }catch(err){showToast('Error: '+err.message,'danger');}
   };
 
   window.markCompleted=async function(taskId){
@@ -614,7 +616,7 @@
     await updateDoc(doc(db,'tasks',taskId),{status:'Pending'});
     showToast('↩ Task moved back to pending','warn');
   };
-  window.logout=function(){ signOut(auth).then(()=>window.location.href='login.html'); };
+  window.logout=function(){signOut(auth).then(()=>window.location.href='login.html');};
 
   function showToast(msg,type){
     const wrap=document.getElementById('toastWrap');
