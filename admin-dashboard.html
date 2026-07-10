@@ -140,7 +140,6 @@
   <div class="nav-right">
     <span class="nav-clock" id="navClock">--:--:--</span>
     <a href="employee-management.html" class="nav-pill"><i class="ti ti-users"></i> Manage Employees</a>
-    <!-- ✅ REPORTS LINK ADDED -->
     <a href="completed-tasks.html" class="nav-pill"><i class="ti ti-circle-check"></i> Reports</a>
     <button class="btn-logout" onclick="logout()"><i class="ti ti-logout"></i> Sign out</button>
   </div>
@@ -284,6 +283,9 @@
     getFirestore, collection, addDoc, onSnapshot,
     doc, updateDoc, deleteDoc, getDocs, query, where
   } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import {
+    escapeHtml, isOverdue, dueBadge, priBadge, animateNum, showToast
+  } from "./utils.js";
 
   const auth = getAuth(app);
   const db   = getFirestore(app);
@@ -319,7 +321,7 @@
     loadTasks();
   }
 
-  let currentFilter='all', allTasks=[];
+  let currentFilter='all', allTasks=[], employeesByEmail={};
 
   window.setFilter=function(f,btn){
     currentFilter=f;
@@ -328,62 +330,59 @@
     renderTasks();
   };
 
-  async function loadEmployeesDropdown(){
-    const sel=document.getElementById('assignedTo');
-    sel.innerHTML='<option value="">Select employee…</option>';
-    const snap=await getDocs(collection(db,'users'));
-    snap.forEach(d=>{
-      const u=d.data();
-      if(u.role==='employee') sel.innerHTML+=`<option value="${u.email}">${u.name} (${u.email})</option>`;
+  // ── FIX: employee dropdown now stays live via onSnapshot instead of a
+  // one-time getDocs() call. If an admin adds a new employee in another
+  // tab while this dashboard is open, "Assign to" updates immediately
+  // instead of needing a page refresh. Whatever the admin currently has
+  // selected is preserved across the live update.
+  function loadEmployeesDropdown(){
+    onSnapshot(collection(db,'users'), (snap)=>{
+      const sel = document.getElementById('assignedTo');
+      const previousValue = sel.value;
+      employeesByEmail = {};
+      let options = '<option value="">Select employee…</option>';
+      snap.forEach(d=>{
+        const u=d.data();
+        if(u.role==='employee'){
+          employeesByEmail[u.email]=u.name||u.email;
+          options += `<option value="${escapeHtml(u.email)}">${escapeHtml(u.name)} (${escapeHtml(u.email)})</option>`;
+        }
+      });
+      sel.innerHTML = options;
+      if (previousValue && employeesByEmail[previousValue]) sel.value = previousValue;
     });
   }
+
+  // ── FIX: track whether this is the very first snapshot so we don't
+  // flood the activity feed with "assigned" entries for every
+  // pre-existing task the instant the page loads. onSnapshot always
+  // reports every existing document as type:'added' on its first
+  // callback, so without this flag every task in the system would show
+  // up as a brand-new assignment the moment an admin opens the page.
+  let isFirstTaskLoad = true;
 
   function loadTasks(){
     onSnapshot(collection(db,'tasks'),(snap)=>{
       allTasks=snap.docs.map(d=>({id:d.id,...d.data()}));
       updateStats();
       renderTasks();
-      snap.docChanges().forEach(change=>{
-        const t=change.doc.data();
-        if(change.type==='modified') pushActivity(t.assignedTo,`updated <strong>${t.title}</strong> → ${t.status}`);
-        if(change.type==='added'&&allTasks.length>1) pushActivity('Admin',`assigned <strong>${t.title}</strong> to ${t.assignedTo}`);
-        if(change.type==='removed') pushActivity('Admin',`deleted <strong>${t.title}</strong>`);
-      });
+      if (!isFirstTaskLoad) {
+        snap.docChanges().forEach(change=>{
+          const t=change.doc.data();
+          if(change.type==='modified') pushActivity(t.assignedTo,`updated <strong>${escapeHtml(t.title)}</strong> → ${escapeHtml(t.status)}`);
+          if(change.type==='added')    pushActivity('Admin',`assigned <strong>${escapeHtml(t.title)}</strong> to ${escapeHtml(t.assignedTo)}`);
+          if(change.type==='removed')  pushActivity('Admin',`deleted <strong>${escapeHtml(t.title)}</strong>`);
+        });
+      }
+      isFirstTaskLoad = false;
     });
-  }
-
-  // ── HELPERS ──
-  function isOverdue(task){
-    if(!task.dueDate||task.status==='Completed') return false;
-    const due=new Date(task.dueDate); due.setHours(0,0,0,0); return due<today;
-  }
-  function isDueSoon(task){
-    if(!task.dueDate||task.status==='Completed') return false;
-    const due=new Date(task.dueDate); due.setHours(0,0,0,0);
-    const diff=(due-today)/(1000*60*60*24); return diff>=0&&diff<=2;
-  }
-  function formatDate(str){
-    if(!str) return '';
-    return new Date(str).toLocaleDateString([],{month:'short',day:'numeric',year:'numeric'});
-  }
-  function dueBadge(task){
-    if(!task.dueDate) return '';
-    if(isOverdue(task))  return `<span class="due due-overdue"><i class="ti ti-alert-circle" style="font-size:11px;"></i> Overdue · ${formatDate(task.dueDate)}</span>`;
-    if(isDueSoon(task))  return `<span class="due due-soon"><i class="ti ti-clock" style="font-size:11px;"></i> Due soon · ${formatDate(task.dueDate)}</span>`;
-    return `<span class="due due-ok"><i class="ti ti-calendar" style="font-size:11px;"></i> Due ${formatDate(task.dueDate)}</span>`;
-  }
-  function priBadge(p){
-    const map  ={low:'pri-low',medium:'pri-medium',high:'pri-high',urgent:'pri-urgent'};
-    const label={low:'Low',medium:'Medium',high:'High',urgent:'Urgent'};
-    const icon ={low:'🟢',medium:'🔵',high:'🟠',urgent:'🔴'};
-    return `<span class="pri ${map[p]||'pri-medium'}">${icon[p]||'🔵'} ${label[p]||'Medium'}</span>`;
   }
 
   function updateStats(){
     const total  =allTasks.length;
     const done   =allTasks.filter(t=>t.status==='Completed').length;
     const pending=allTasks.filter(t=>t.status==='Pending').length;
-    const overdue=allTasks.filter(t=>isOverdue(t)).length;
+    const overdue=allTasks.filter(t=>isOverdue(t,today)).length;
     animateNum('statTotal',total);
     animateNum('statPending',pending);
     animateNum('statDone',done);
@@ -391,20 +390,12 @@
     document.getElementById('heroProgress').textContent=(total>0?Math.round((done/total)*100):0)+'%';
   }
 
-  function animateNum(id,target){
-    const el=document.getElementById(id);
-    let cur=parseInt(el.textContent)||0;
-    if(cur===target){el.textContent=target;return;}
-    const step=target>cur?1:-1;
-    const iv=setInterval(()=>{cur+=step;el.textContent=cur;if(cur===target)clearInterval(iv);},50);
-  }
-
   function renderTasks(){
     const grid=document.getElementById('taskGrid');
     let filtered=allTasks;
     if     (currentFilter==='Pending')   filtered=allTasks.filter(t=>t.status==='Pending');
     else if(currentFilter==='Completed') filtered=allTasks.filter(t=>t.status==='Completed');
-    else if(currentFilter==='overdue')   filtered=allTasks.filter(t=>isOverdue(t));
+    else if(currentFilter==='overdue')   filtered=allTasks.filter(t=>isOverdue(t,today));
     else if(currentFilter==='urgent')    filtered=allTasks.filter(t=>t.priority==='urgent');
     else if(currentFilter==='high')      filtered=allTasks.filter(t=>t.priority==='high');
 
@@ -417,44 +408,74 @@
     const sorted=[...filtered].sort((a,b)=>{
       if(a.status==='Completed'&&b.status!=='Completed') return 1;
       if(b.status==='Completed'&&a.status!=='Completed') return -1;
-      if(isOverdue(a)&&!isOverdue(b)) return -1;
-      if(isOverdue(b)&&!isOverdue(a)) return 1;
+      if(isOverdue(a,today)&&!isOverdue(b,today)) return -1;
+      if(isOverdue(b,today)&&!isOverdue(a,today)) return 1;
       return (priOrder[a.priority]??2)-(priOrder[b.priority]??2);
     });
 
+    // ── FIX: switched from inline onclick="...('${esc(field)}')" strings
+    // (esc() only escaped quotes — not < > or backslashes, so a title
+    // containing a backslash could break the handler) to data-* attributes
+    // plus one delegated click listener below. This also means the
+    // *visible* title/description/assignee text is now escapeHtml()'d,
+    // closing a stored-XSS gap the old code had even though esc() protected
+    // the onclick attribute itself.
     grid.innerHTML=sorted.map((task,i)=>{
       const done=task.status==='Completed';
-      const over=isOverdue(task);
+      const over=isOverdue(task,today);
       const rowCls=done?'completed':over?'overdue':'pending';
       return `
-        <div class="task-row ${rowCls}" style="animation-delay:${i*0.04}s">
+        <div class="task-row ${rowCls}" style="animation-delay:${i*0.04}s" data-task-id="${task.id}">
           <div class="task-body">
-            <div class="task-title-text">${task.title||'Untitled'}</div>
-            <div class="task-desc-text">${task.description||''}</div>
+            <div class="task-title-text">${escapeHtml(task.title)||'Untitled'}</div>
+            <div class="task-desc-text">${escapeHtml(task.description)}</div>
             <div class="task-meta">
-              <span class="assignee-chip"><i class="ti ti-user" style="font-size:11px;"></i>${task.assignedTo}</span>
-              <span class="badge ${done?'badge-completed':'badge-pending'}">${task.status}</span>
+              <span class="assignee-chip"><i class="ti ti-user" style="font-size:11px;"></i>${escapeHtml(task.assignedTo)}</span>
+              <span class="badge ${done?'badge-completed':'badge-pending'}">${escapeHtml(task.status)}</span>
               ${priBadge(task.priority||'medium')}
               ${dueBadge(task)}
             </div>
           </div>
           <div class="task-actions">
-            <button class="icon-btn edit" title="Edit"
-              onclick="editTask('${task.id}','${esc(task.title)}','${esc(task.description)}','${esc(task.assignedTo)}','${task.priority||'medium'}','${task.dueDate||''}')">
-              <i class="ti ti-pencil"></i>
-            </button>
+            <button class="icon-btn edit" title="Edit" data-action="edit"><i class="ti ti-pencil"></i></button>
             ${done
-              ?`<button class="icon-btn undo" title="Mark Pending" onclick="markPending('${task.id}')"><i class="ti ti-rotate-left"></i></button>`
-              :`<button class="icon-btn done" title="Mark Completed" onclick="markCompleted('${task.id}')"><i class="ti ti-check"></i></button>`}
-            <button class="icon-btn del" title="Delete" onclick="confirmDelete('${task.id}')">
-              <i class="ti ti-trash"></i>
-            </button>
+              ?`<button class="icon-btn undo" title="Mark Pending" data-action="pending"><i class="ti ti-rotate-left"></i></button>`
+              :`<button class="icon-btn done" title="Mark Completed" data-action="complete"><i class="ti ti-check"></i></button>`}
+            <button class="icon-btn del" title="Delete" data-action="delete"><i class="ti ti-trash"></i></button>
           </div>
         </div>`;
     }).join('');
   }
 
-  function esc(s){return(s||'').replace(/'/g,"\\'").replace(/"/g,'&quot;');}
+  // ── delegated click handler for task row action buttons ──
+  document.getElementById('taskGrid').addEventListener('click', (e) => {
+    const btn = e.target.closest('button[data-action]');
+    if (!btn) return;
+    const row = btn.closest('.task-row');
+    const id  = row?.dataset.taskId;
+    if (!id) return;
+    const task = allTasks.find(t => t.id === id);
+    if (!task) return;
+
+    if (btn.dataset.action === 'edit')     editTask(task);
+    if (btn.dataset.action === 'complete') markCompleted(id);
+    if (btn.dataset.action === 'pending')  markPending(id);
+    if (btn.dataset.action === 'delete')   confirmDelete(id);
+  });
+
+  function editTask(task){
+    document.getElementById('editTaskId').value  = task.id;
+    document.getElementById('title').value       = task.title || '';
+    document.getElementById('description').value = task.description || '';
+    document.getElementById('assignedTo').value  = task.assignedTo || '';
+    document.getElementById('priority').value    = task.priority || 'medium';
+    document.getElementById('dueDate').value     = task.dueDate || '';
+    document.getElementById('formTitle').innerHTML='<i class="ti ti-pencil" style="color:var(--warn);"></i> Edit task';
+    document.getElementById('addBtn').classList.add('d-none');
+    document.getElementById('saveBtn').classList.remove('d-none');
+    document.getElementById('cancelBtn').classList.remove('d-none');
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
 
   window.addTask=async function(){
     const title      =document.getElementById('title').value.trim();
@@ -467,20 +488,6 @@
     showMsg('Task added successfully!','success');
     showToast('✓ Task assigned to '+assignedTo,'success');
     clearForm();
-  };
-
-  window.editTask=function(id,title,description,assignedTo,priority,dueDate){
-    document.getElementById('editTaskId').value  =id;
-    document.getElementById('title').value       =title;
-    document.getElementById('description').value =description;
-    document.getElementById('assignedTo').value  =assignedTo;
-    document.getElementById('priority').value    =priority||'medium';
-    document.getElementById('dueDate').value     =dueDate||'';
-    document.getElementById('formTitle').innerHTML='<i class="ti ti-pencil" style="color:var(--warn);"></i> Edit task';
-    document.getElementById('addBtn').classList.add('d-none');
-    document.getElementById('saveBtn').classList.remove('d-none');
-    document.getElementById('cancelBtn').classList.remove('d-none');
-    window.scrollTo({top:0,behavior:'smooth'});
   };
 
   window.saveEdit=async function(){
@@ -535,30 +542,22 @@
     pendingDeleteId=null;
   };
 
-  const colors=['#4F46E5','#059669','#D97706','#DC2626','#0891B2'];
+  const activityColors=['#4F46E5','#059669','#D97706','#DC2626','#0891B2'];
   let colorIdx=0;
-  function pushActivity(actor,msg){
+  function pushActivity(actor,msgHtml){
     const feed=document.getElementById('activityFeed');
-    const color=colors[colorIdx++%colors.length];
+    const color=activityColors[colorIdx++%activityColors.length];
     const init=(actor||'??').slice(0,2).toUpperCase();
     const ts=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
     const item=document.createElement('div');
     item.className='activity-item';
     item.style.cssText='opacity:0;transition:opacity 0.4s;';
-    item.innerHTML=`<div class="act-icon" style="background:${color}22;color:${color};">${init}</div><div><div class="act-msg">${msg}</div><div class="act-ts">${ts}</div></div>`;
+    // msgHtml already had escapeHtml() applied to any user data by the
+    // caller in loadTasks() above, so it's safe to insert here.
+    item.innerHTML=`<div class="act-icon" style="background:${color}22;color:${color};">${init}</div><div><div class="act-msg">${msgHtml}</div><div class="act-ts">${ts}</div></div>`;
     feed.prepend(item);
     setTimeout(()=>item.style.opacity='1',30);
     while(feed.children.length>6)feed.removeChild(feed.lastChild);
-  }
-
-  function showToast(msg,type){
-    const wrap=document.getElementById('toastWrap');
-    const toast=document.createElement('div');
-    toast.className='toast';
-    toast.style.background=type==='success'?'#059669':type==='danger'?'#DC2626':'#D97706';
-    toast.textContent=msg;
-    wrap.appendChild(toast);
-    setTimeout(()=>toast.remove(),3000);
   }
 
   function showMsg(text,type){
