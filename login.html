@@ -41,7 +41,6 @@
       overflow: hidden;
     }
 
-    /* subtle animated background blobs */
     body::before {
       content: '';
       position: fixed;
@@ -67,7 +66,6 @@
       to   { transform: translate(40px, 30px) scale(1.08); }
     }
 
-    /* ── CARD ── */
     .login-card {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -85,7 +83,6 @@
       to   { opacity: 1; transform: translateY(0); }
     }
 
-    /* ── HEADER ── */
     .card-hero {
       background: var(--brand);
       padding: 2rem 2rem 1.75rem;
@@ -130,7 +127,6 @@
       position: relative; z-index: 1;
     }
 
-    /* ── BODY ── */
     .card-body { padding: 1.75rem 2rem; }
 
     .form-group { margin-bottom: 16px; }
@@ -160,7 +156,6 @@
     .form-input:focus + .input-icon,
     .input-wrap:focus-within .input-icon { color: var(--brand); }
 
-    /* password toggle */
     .toggle-pw {
       position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
       font-size: 16px; color: var(--text-3); cursor: pointer; transition: color 0.15s;
@@ -169,7 +164,6 @@
     .toggle-pw:hover { color: var(--brand); }
     .pw-input { padding-right: 38px; }
 
-    /* ── BUTTON ── */
     .btn-login {
       width: 100%; padding: 11px;
       font-size: 14px; font-weight: 600; font-family: 'Inter', sans-serif;
@@ -183,7 +177,6 @@
     .btn-login:active { transform: scale(0.98); }
     .btn-login:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
 
-    /* spinner */
     .spinner {
       width: 16px; height: 16px;
       border: 2px solid rgba(255,255,255,0.35);
@@ -194,7 +187,6 @@
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* ── MESSAGE ── */
     .msg-box {
       font-size: 13px; padding: 10px 12px;
       border-radius: var(--radius-sm); margin-top: 14px;
@@ -203,7 +195,6 @@
     .msg-box.error   { background: var(--danger-soft);  color: var(--danger);  display: flex; }
     .msg-box.success { background: var(--success-soft); color: var(--success); display: flex; }
 
-    /* ── FOOTER ── */
     .card-footer {
       padding: 14px 2rem;
       border-top: 1px solid var(--border);
@@ -220,14 +211,12 @@
 
 <div class="login-card">
 
-  <!-- HERO -->
   <div class="card-hero">
     <div class="hero-icon"><i class="ti ti-shield-check"></i></div>
     <div class="hero-title">Employee Task Management</div>
     <div class="hero-sub">Sign in to access your dashboard</div>
   </div>
 
-  <!-- FORM -->
   <div class="card-body">
 
     <div class="form-group">
@@ -268,7 +257,6 @@
 
   </div>
 
-  <!-- FOOTER -->
   <div class="card-footer">
     <a href="index.html"><i class="ti ti-arrow-left" style="font-size:12px;vertical-align:-1px;"></i> Back to Home</a>
   </div>
@@ -335,10 +323,15 @@
       }, 600);
 
     } catch (err) {
+      // FIX: modern Firebase Auth returns a single generic
+      // 'auth/invalid-credential' for both a wrong email and a wrong
+      // password (to avoid leaking which one was incorrect), so the old
+      // separate 'auth/user-not-found' / 'auth/wrong-password' entries
+      // were dead code that could no longer be reached. Removed them —
+      // this is the same user-facing behavior, just without the unused
+      // branches.
       const friendly = {
-        'auth/invalid-credential':   'Incorrect email or password.',
-        'auth/user-not-found':        'No account found with that email.',
-        'auth/wrong-password':        'Incorrect password. Please try again.',
+        'auth/invalid-credential':    'Incorrect email or password.',
         'auth/too-many-requests':     'Too many attempts. Please wait and try again.',
         'auth/network-request-failed':'Network error. Check your connection.',
       };
