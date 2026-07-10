@@ -80,6 +80,8 @@
     .task-top{display:flex;align-items:flex-start;gap:14px;}
     .task-check{width:22px;height:22px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.2s;}
     .task-check.done{background:var(--success);border-color:var(--success);color:white;}
+    .task-check.disabled{cursor:not-allowed;opacity:0.4;pointer-events:none;}
+    .task-check.disabled:hover{border-color:var(--border);}
     .task-check i{font-size:12px;}
     .task-body{flex:1;min-width:0;}
     .task-title{font-size:14px;font-weight:600;color:var(--text-1);margin-bottom:3px;}
@@ -105,6 +107,8 @@
     .task-action{margin-left:auto;font-size:12px;font-weight:500;padding:5px 14px;border-radius:var(--radius-sm);border:none;cursor:pointer;transition:all 0.15s;}
     .btn-complete{background:var(--success-soft);color:var(--success);}
     .btn-complete:hover{background:var(--success);color:white;}
+    .btn-complete.disabled{background:var(--bg);color:var(--text-3);cursor:not-allowed;}
+    .btn-complete.disabled:hover{background:var(--bg);color:var(--text-3);}
     .btn-pending{background:var(--bg);color:var(--text-2);border:1px solid var(--border);}
     .btn-pending:hover{background:var(--warn-soft);color:var(--warn);border-color:var(--warn);}
     .task-outputs{margin-top:12px;border-top:1px solid var(--border);padding-top:12px;}
@@ -385,10 +389,19 @@
         timingHtml=timingBadge(timing);
       }
 
+      // A task can only be marked complete once at least one output link
+      // has been submitted. When not done and no link exists yet, both the
+      // circular check and the "Mark complete" button render as disabled
+      // with a tooltip explaining why, instead of silently doing nothing.
+      const canComplete = done || hasOutput;
+
       return `
         <div class="task-card ${cls}" style="animation-delay:${i*0.05}s" id="card-${task.id}">
           <div class="task-top">
-            <div class="task-check ${done?'done':''}" data-task-id="${task.id}" data-action="${done?'pending':'complete'}">
+            <div class="task-check ${done?'done':''}${!canComplete?' disabled':''}"
+                 data-task-id="${task.id}"
+                 data-action="${done?'pending':'complete'}"
+                 title="${!canComplete?'Attach an output link before marking this task complete':''}">
               ${done?'<i class="ti ti-check"></i>':''}
             </div>
             <div class="task-body">
@@ -401,7 +414,7 @@
                 ${timingHtml}
                 ${done
                   ?`<button class="task-action btn-pending" data-task-id="${task.id}" data-action="pending"><i class="ti ti-refresh" style="font-size:12px;vertical-align:-1px;"></i> Mark pending</button>`
-                  :`<button class="task-action btn-complete" data-task-id="${task.id}" data-action="complete"><i class="ti ti-check" style="font-size:12px;vertical-align:-1px;"></i> Mark complete</button>`}
+                  :`<button class="task-action btn-complete${!hasOutput?' disabled':''}" data-task-id="${task.id}" data-action="complete" title="${!hasOutput?'Attach an output link before marking this task complete':''}"${!hasOutput?' disabled':''}><i class="ti ti-check" style="font-size:12px;vertical-align:-1px;"></i> Mark complete</button>`}
               </div>
             </div>
           </div>
@@ -541,6 +554,15 @@
   }
 
   async function markCompleted(taskId){
+    // FIX: require at least one output link before a task can be marked
+    // complete. This checks linksMap directly (the same live data used to
+    // render the disabled button state) rather than trusting the DOM, so
+    // it can't be bypassed by re-enabling the button via dev tools.
+    const links = linksMap[taskId] || [];
+    if (links.length === 0) {
+      showToast('⚠ Attach an output link before marking this task complete', 'warn');
+      return;
+    }
     await updateDoc(doc(db,'tasks',taskId),{status:'Completed'});
     showToast('✓ Task marked as completed','success');
   }
