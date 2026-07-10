@@ -89,7 +89,6 @@
     .badge{font-size:11px;font-weight:500;padding:3px 10px;border-radius:20px;}
     .badge-pending{background:var(--brand-soft);color:var(--brand);}
     .badge-completed{background:var(--success-soft);color:var(--success);}
-    /* priority badges — hidden once output submitted */
     .pri{font-size:10px;font-weight:700;padding:2px 9px;border-radius:20px;text-transform:uppercase;letter-spacing:0.04em;}
     .pri-low{background:#F0FDF4;color:#166534;}
     .pri-medium{background:#EFF6FF;color:#1D4ED8;}
@@ -99,7 +98,6 @@
     .due-ok{background:#F0FDF4;color:#166534;}
     .due-soon{background:var(--warn-soft);color:var(--warn);}
     .due-overdue{background:var(--danger-soft);color:var(--danger);}
-    /* submission timing badge */
     .sub-timing{font-size:11px;font-weight:600;display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;}
     .sub-early{background:#D1FAE5;color:#065F46;}
     .sub-late {background:#FEE2E2;color:#991B1B;}
@@ -109,7 +107,6 @@
     .btn-complete:hover{background:var(--success);color:white;}
     .btn-pending{background:var(--bg);color:var(--text-2);border:1px solid var(--border);}
     .btn-pending:hover{background:var(--warn-soft);color:var(--warn);border-color:var(--warn);}
-    /* OUTPUT LINKS */
     .task-outputs{margin-top:12px;border-top:1px solid var(--border);padding-top:12px;}
     .outputs-label{font-size:12px;font-weight:600;color:var(--text-2);text-transform:uppercase;letter-spacing:0.04em;display:flex;align-items:center;gap:6px;margin-bottom:10px;}
     .outputs-label i{color:var(--brand);font-size:14px;}
@@ -225,14 +222,18 @@
   import {
     getFirestore, collection, query, where,
     onSnapshot, doc, updateDoc, getDocs,
-    addDoc, deleteDoc, serverTimestamp, Timestamp
+    addDoc, deleteDoc, Timestamp
   } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import {
+    escapeHtml, formatDate, isOverdue, isDueTomorrow, isDueSoon,
+    dueBadge, priBadge, detectPlatform, calcTiming, timingBadge,
+    animateNum, showToast
+  } from "./utils.js";
 
   const auth = getAuth(app);
   const db   = getFirestore(app);
 
-  const today    = new Date(); today.setHours(0,0,0,0);
-  const tomorrow = new Date(today); tomorrow.setDate(tomorrow.getDate()+1);
+  const today = new Date(); today.setHours(0,0,0,0);
   let currentUserEmail = '';
 
   // ── CLOCK ──
@@ -262,99 +263,13 @@
     loadTasks(user.email);
   });
 
-  // ── DATE HELPERS ──
-  function isOverdue(t){
-    if(!t.dueDate||t.status==='Completed') return false;
-    const d=new Date(t.dueDate); d.setHours(0,0,0,0); return d<today;
-  }
-  function isDueTomorrow(t){
-    if(!t.dueDate||t.status==='Completed') return false;
-    const d=new Date(t.dueDate); d.setHours(0,0,0,0); return d.getTime()===tomorrow.getTime();
-  }
-  function isDueSoon(t){
-    if(!t.dueDate||t.status==='Completed') return false;
-    const d=new Date(t.dueDate); d.setHours(0,0,0,0);
-    const diff=(d-today)/(1000*60*60*24); return diff>=0&&diff<=2;
-  }
-  function fmtDate(s){
-    if(!s) return '';
-    return new Date(s).toLocaleDateString([],{month:'short',day:'numeric',year:'numeric'});
-  }
-  function dueBadge(t){
-    if(!t.dueDate) return '';
-    if(isOverdue(t))    return `<span class="due due-overdue"><i class="ti ti-alert-circle" style="font-size:11px;"></i> Overdue · ${fmtDate(t.dueDate)}</span>`;
-    if(isDueTomorrow(t))return `<span class="due due-soon"><i class="ti ti-clock" style="font-size:11px;"></i> Due tomorrow!</span>`;
-    if(isDueSoon(t))    return `<span class="due due-soon"><i class="ti ti-clock" style="font-size:11px;"></i> Due soon · ${fmtDate(t.dueDate)}</span>`;
-    return `<span class="due due-ok"><i class="ti ti-calendar" style="font-size:11px;"></i> Due ${fmtDate(t.dueDate)}</span>`;
-  }
-  function priBadge(p, hasOutput){
-    // ✅ Hide priority badge once output is submitted
-    if(hasOutput) return '';
-    const map  ={low:'pri-low',medium:'pri-medium',high:'pri-high',urgent:'pri-urgent'};
-    const label={low:'Low',medium:'Medium',high:'High',urgent:'Urgent'};
-    const icon ={low:'🟢',medium:'🔵',high:'🟠',urgent:'🔴'};
-    return `<span class="pri ${map[p]||'pri-medium'}">${icon[p]||'🔵'} ${label[p]||'Medium'}</span>`;
-  }
-
-  // ── SUBMISSION TIMING ──
-  // Calculates how early or late the output was submitted vs due date
-  function calcTiming(dueDate, submittedAt) {
-    if (!dueDate || !submittedAt) return null;
-
-    // due date: end of that day (23:59:59)
-    const due = new Date(dueDate);
-    due.setHours(23, 59, 59, 999);
-
-    const submitted = submittedAt.toDate ? submittedAt.toDate() : new Date(submittedAt);
-    const diffMs = submitted - due; // positive = late, negative = early
-    const absDiffMs = Math.abs(diffMs);
-
-    const days    = Math.floor(absDiffMs / (1000*60*60*24));
-    const hours   = Math.floor((absDiffMs % (1000*60*60*24)) / (1000*60*60));
-    const minutes = Math.floor((absDiffMs % (1000*60*60)) / (1000*60));
-
-    let timeStr = '';
-    if (days > 0)    timeStr += `${days}d `;
-    if (hours > 0)   timeStr += `${hours}h `;
-    timeStr += `${minutes}m`;
-    timeStr = timeStr.trim() || '< 1m';
-
-    if (diffMs > 0) {
-      return { type: 'late',   label: `Submitted ${timeStr} late`,  cls: 'sub-late',   icon: 'ti-clock-x' };
-    } else if (diffMs < 0) {
-      return { type: 'early',  label: `Submitted ${timeStr} early`, cls: 'sub-early',  icon: 'ti-clock-check' };
-    } else {
-      return { type: 'ontime', label: 'Submitted on time',          cls: 'sub-ontime', icon: 'ti-check' };
-    }
-  }
-
-  function timingBadge(timing) {
-    if (!timing) return '';
-    return `<span class="sub-timing ${timing.cls}"><i class="ti ${timing.icon}" style="font-size:11px;"></i> ${timing.label}</span>`;
-  }
-
-  // ── PLATFORM DETECTION ──
-  function detectPlatform(url){
-    try{
-      const h=new URL(url).hostname.toLowerCase();
-      if(h.includes('drive.google'))  return {name:'Google Drive',icon:'ti ti-brand-google-drive',color:'#1FA463',bg:'#E6F4EA'};
-      if(h.includes('docs.google'))   return {name:'Google Docs', icon:'ti ti-file-text',          color:'#1A73E8',bg:'#E8F0FE'};
-      if(h.includes('onedrive')||h.includes('1drv')) return {name:'OneDrive',icon:'ti ti-brand-onedrive',color:'#0078D4',bg:'#E3F2FD'};
-      if(h.includes('dropbox'))       return {name:'Dropbox',     icon:'ti ti-brand-dropbox',       color:'#0061FF',bg:'#E8F0FF'};
-      if(h.includes('github'))        return {name:'GitHub',      icon:'ti ti-brand-github',        color:'#24292E',bg:'#F0F0F0'};
-      if(h.includes('figma'))         return {name:'Figma',       icon:'ti ti-brand-figma',         color:'#F24E1E',bg:'#FEF0EC'};
-      if(h.includes('notion'))        return {name:'Notion',      icon:'ti ti-notebook',            color:'#191919',bg:'#F5F5F5'};
-    }catch(e){}
-    return {name:'Link',icon:'ti ti-link',color:'var(--brand)',bg:'var(--brand-soft)'};
-  }
-
   // ── ALERTS ──
   function buildAlerts(tasks){
     const stack=document.getElementById('alertStack');
     const dot=document.getElementById('bellDot');
     stack.innerHTML='';
-    const overdue  =tasks.filter(t=>isOverdue(t));
-    const dueTomrow=tasks.filter(t=>isDueTomorrow(t));
+    const overdue  =tasks.filter(t=>isOverdue(t,today));
+    const dueTomrow=tasks.filter(t=>isDueTomorrow(t,today));
     let has=false;
     if(overdue.length){
       has=true;
@@ -364,7 +279,7 @@
         <div class="alert-icon"><i class="ti ti-alert-triangle"></i></div>
         <div class="alert-body">
           <div class="alert-title">⚠️ You have ${overdue.length} overdue task${overdue.length>1?'s':''}!</div>
-          <ul class="alert-tasks">${overdue.map(t=>`<li><i class="ti ti-point-filled" style="color:var(--danger);"></i><strong>${t.title}</strong> — was due ${fmtDate(t.dueDate)}</li>`).join('')}</ul>
+          <ul class="alert-tasks">${overdue.map(t=>`<li><i class="ti ti-point-filled" style="color:var(--danger);"></i><strong>${escapeHtml(t.title)}</strong> — was due ${formatDate(t.dueDate)}</li>`).join('')}</ul>
         </div>
         <button class="alert-dismiss" onclick="this.closest('.alert').remove()"><i class="ti ti-x"></i></button>`;
       stack.appendChild(el);
@@ -377,7 +292,7 @@
         <div class="alert-icon"><i class="ti ti-clock"></i></div>
         <div class="alert-body">
           <div class="alert-title">⏰ ${dueTomrow.length>1?'These tasks are':'This task is'} due tomorrow!</div>
-          <ul class="alert-tasks">${dueTomrow.map(t=>`<li><i class="ti ti-point-filled" style="color:var(--warn);"></i><strong>${t.title}</strong></li>`).join('')}</ul>
+          <ul class="alert-tasks">${dueTomrow.map(t=>`<li><i class="ti ti-point-filled" style="color:var(--warn);"></i><strong>${escapeHtml(t.title)}</strong></li>`).join('')}</ul>
         </div>
         <button class="alert-dismiss" onclick="this.closest('.alert').remove()"><i class="ti ti-x"></i></button>`;
       stack.appendChild(el);
@@ -401,13 +316,11 @@
   };
 
   function loadTasks(email){
-    // live tasks listener
     const q=query(collection(db,'tasks'),where('assignedTo','==',email));
     onSnapshot(q,(snap)=>{
       allTasks=snap.docs.map(d=>({id:d.id,...d.data()}));
       updateStats(); buildAlerts(allTasks); renderTasks();
     });
-    // live links listener — to know which tasks have outputs
     const lq=query(collection(db,'task_links'),where('submittedBy','==',email));
     onSnapshot(lq,(snap)=>{
       linksMap={};
@@ -424,17 +337,9 @@
     const total  =allTasks.length;
     const done   =allTasks.filter(t=>t.status==='Completed').length;
     const pending=allTasks.filter(t=>t.status==='Pending').length;
-    const overdue=allTasks.filter(t=>isOverdue(t)).length;
-    animNum('statTotal',total); animNum('statDone',done);
-    animNum('statPending',pending); animNum('statOverdue',overdue);
-  }
-
-  function animNum(id,target){
-    const el=document.getElementById(id);
-    let cur=parseInt(el.textContent)||0;
-    if(cur===target){el.textContent=target;return;}
-    const step=target>cur?1:-1;
-    const iv=setInterval(()=>{cur+=step;el.textContent=cur;if(cur===target)clearInterval(iv);},60);
+    const overdue=allTasks.filter(t=>isOverdue(t,today)).length;
+    animateNum('statTotal',total); animateNum('statDone',done);
+    animateNum('statPending',pending); animateNum('statOverdue',overdue);
   }
 
   function renderTasks(){
@@ -442,8 +347,8 @@
     let filtered=allTasks;
     if(currentFilter==='Pending')   filtered=allTasks.filter(t=>t.status==='Pending');
     else if(currentFilter==='Completed') filtered=allTasks.filter(t=>t.status==='Completed');
-    else if(currentFilter==='overdue')   filtered=allTasks.filter(t=>isOverdue(t));
-    else if(currentFilter==='due-soon')  filtered=allTasks.filter(t=>isDueSoon(t)&&!isOverdue(t));
+    else if(currentFilter==='overdue')   filtered=allTasks.filter(t=>isOverdue(t,today));
+    else if(currentFilter==='due-soon')  filtered=allTasks.filter(t=>isDueSoon(t,today)&&!isOverdue(t,today));
 
     if(!filtered.length){
       list.innerHTML=`<div class="empty"><i class="ti ti-clipboard-x"></i><p>${currentFilter==='all'?'No tasks assigned to you yet.':'No '+currentFilter.replace('-',' ')+' tasks.'}</p></div>`;
@@ -453,17 +358,17 @@
     const sorted=[...filtered].sort((a,b)=>{
       if(a.status==='Completed'&&b.status!=='Completed') return 1;
       if(b.status==='Completed'&&a.status!=='Completed') return -1;
-      if(isOverdue(a)&&!isOverdue(b)) return -1;
-      if(isOverdue(b)&&!isOverdue(a)) return 1;
-      if(isDueTomorrow(a)&&!isDueTomorrow(b)) return -1;
-      if(isDueTomorrow(b)&&!isDueTomorrow(a)) return 1;
+      if(isOverdue(a,today)&&!isOverdue(b,today)) return -1;
+      if(isOverdue(b,today)&&!isOverdue(a,today)) return 1;
+      if(isDueTomorrow(a,today)&&!isDueTomorrow(b,today)) return -1;
+      if(isDueTomorrow(b,today)&&!isDueTomorrow(a,today)) return 1;
       return 0;
     });
 
     list.innerHTML=sorted.map((task,i)=>{
       const done   =task.status==='Completed';
-      const over   =isOverdue(task);
-      const soon   =isDueSoon(task)&&!over;
+      const over   =isOverdue(task,today);
+      const soon   =isDueSoon(task,today)&&!over;
       const cls    =done?'completed':over?'overdue':soon?'due-soon':'pending';
       const links  =linksMap[task.id]||[];
       const hasOutput=links.length>0;
@@ -483,20 +388,20 @@
       return `
         <div class="task-card ${cls}" style="animation-delay:${i*0.05}s" id="card-${task.id}">
           <div class="task-top">
-            <div class="task-check ${done?'done':''}" onclick="${done?'markPending':'markCompleted'}('${task.id}')">
+            <div class="task-check ${done?'done':''}" data-task-id="${task.id}" data-action="${done?'pending':'complete'}">
               ${done?'<i class="ti ti-check"></i>':''}
             </div>
             <div class="task-body">
-              <div class="task-title">${task.title||'Untitled task'}</div>
-              <div class="task-desc">${task.description||''}</div>
+              <div class="task-title">${escapeHtml(task.title)||'Untitled task'}</div>
+              <div class="task-desc">${escapeHtml(task.description)}</div>
               <div class="task-footer">
                 <span class="badge ${done?'badge-completed':'badge-pending'}">${done?'Completed':'Pending'}</span>
-                ${task.priority&&!hasOutput?priBadge(task.priority,false):''}
-                ${dueBadge(task)}
+                ${task.priority&&!hasOutput?priBadge(task.priority):''}
+                ${dueBadge(task,{showTomorrow:true})}
                 ${timingHtml}
                 ${done
-                  ?`<button class="task-action btn-pending" onclick="markPending('${task.id}')"><i class="ti ti-refresh" style="font-size:12px;vertical-align:-1px;"></i> Mark pending</button>`
-                  :`<button class="task-action btn-complete" onclick="markCompleted('${task.id}')"><i class="ti ti-check" style="font-size:12px;vertical-align:-1px;"></i> Mark complete</button>`}
+                  ?`<button class="task-action btn-pending" data-task-id="${task.id}" data-action="pending"><i class="ti ti-refresh" style="font-size:12px;vertical-align:-1px;"></i> Mark pending</button>`
+                  :`<button class="task-action btn-complete" data-task-id="${task.id}" data-action="complete"><i class="ti ti-check" style="font-size:12px;vertical-align:-1px;"></i> Mark complete</button>`}
               </div>
             </div>
           </div>
@@ -506,10 +411,10 @@
             <div class="outputs-label"><i class="ti ti-link"></i> Output links ${hasOutput?`<span style="background:var(--success-soft);color:var(--success);font-size:10px;padding:1px 7px;border-radius:20px;font-weight:700;">${links.length} submitted</span>`:''}</div>
             ${!hasOutput?`<div class="output-hint"><i class="ti ti-info-circle"></i> Upload your output to Google Drive or similar, then paste the share link below.</div>`:''}
             <div class="platform-chips">
-              <div class="chip" onclick="fillLink('${task.id}','https://drive.google.com/')"><i class="ti ti-brand-google-drive"></i> Google Drive</div>
-              <div class="chip" onclick="fillLink('${task.id}','https://onedrive.live.com/')"><i class="ti ti-brand-onedrive"></i> OneDrive</div>
-              <div class="chip" onclick="fillLink('${task.id}','https://www.dropbox.com/')"><i class="ti ti-brand-dropbox"></i> Dropbox</div>
-              <div class="chip" onclick="fillLink('${task.id}','https://github.com/')"><i class="ti ti-brand-github"></i> GitHub</div>
+              <div class="chip" data-fill-task="${task.id}" data-fill-url="https://drive.google.com/"><i class="ti ti-brand-google-drive"></i> Google Drive</div>
+              <div class="chip" data-fill-task="${task.id}" data-fill-url="https://onedrive.live.com/"><i class="ti ti-brand-onedrive"></i> OneDrive</div>
+              <div class="chip" data-fill-task="${task.id}" data-fill-url="https://www.dropbox.com/"><i class="ti ti-brand-dropbox"></i> Dropbox</div>
+              <div class="chip" data-fill-task="${task.id}" data-fill-url="https://github.com/"><i class="ti ti-brand-github"></i> GitHub</div>
             </div>
             <div class="link-form">
               <div class="link-input-wrap">
@@ -517,7 +422,7 @@
                 <input type="url" class="link-input" id="url-${task.id}" placeholder="Paste share link here…">
               </div>
               <input type="text" class="link-label-input" id="label-${task.id}" placeholder="Label (optional) e.g. Final Report v2">
-              <button class="btn-add-link" onclick="submitLink('${task.id}','${task.dueDate||''}')">
+              <button class="btn-add-link" data-submit-task="${task.id}" data-due-date="${task.dueDate||''}">
                 <i class="ti ti-plus"></i> Add link
               </button>
             </div>
@@ -537,31 +442,59 @@
         ?new Date(lk.submittedAt.seconds*1000).toLocaleString([],{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'})
         :'just now';
       const timing=dueDate&&lk.submittedAt?calcTiming(dueDate,lk.submittedAt):null;
+      // escapeHtml on label/url/platform-name: these come from employee-entered
+      // input, so they're rendered safely rather than trusted as-is.
       return `
         <div class="link-item">
           <div class="link-platform-icon" style="background:${pl.bg};color:${pl.color};"><i class="${pl.icon}"></i></div>
           <div class="link-info">
-            <div class="link-name">${lk.label||pl.name}</div>
-            <div class="link-url">${lk.url}</div>
+            <div class="link-name">${escapeHtml(lk.label||pl.name)}</div>
+            <div class="link-url">${escapeHtml(lk.url)}</div>
             <div class="link-meta">
-              ${pl.name} · ${ts}
+              ${escapeHtml(pl.name)} · ${ts}
               ${timing?`· ${timingBadge(timing)}`:''}
             </div>
           </div>
           <div class="link-actions">
-            <a href="${lk.url}" target="_blank" rel="noopener" class="link-btn open" title="Open"><i class="ti ti-external-link"></i></a>
-            <button class="link-btn remove" title="Remove" onclick="removeLink('${lk.id}')"><i class="ti ti-trash"></i></button>
+            <a href="${encodeURI(lk.url)}" target="_blank" rel="noopener" class="link-btn open" title="Open"><i class="ti ti-external-link"></i></a>
+            <button class="link-btn remove" title="Remove" data-remove-link="${lk.id}"><i class="ti ti-trash"></i></button>
           </div>
         </div>`;
     }).join('');
   }
 
-  window.fillLink=function(taskId,url){
+  // ── delegated click handling for task check / mark buttons / link chips / remove buttons ──
+  document.getElementById('taskList').addEventListener('click', (e) => {
+    const check = e.target.closest('[data-action][data-task-id]');
+    if (check) {
+      const id = check.dataset.taskId;
+      if (check.dataset.action === 'complete') markCompleted(id);
+      if (check.dataset.action === 'pending')  markPending(id);
+      return;
+    }
+    const chip = e.target.closest('[data-fill-task]');
+    if (chip) {
+      fillLink(chip.dataset.fillTask, chip.dataset.fillUrl);
+      return;
+    }
+    const submitBtn = e.target.closest('[data-submit-task]');
+    if (submitBtn) {
+      submitLink(submitBtn.dataset.submitTask, submitBtn.dataset.dueDate);
+      return;
+    }
+    const removeBtn = e.target.closest('[data-remove-link]');
+    if (removeBtn) {
+      removeLink(removeBtn.dataset.removeLink);
+      return;
+    }
+  });
+
+  function fillLink(taskId,url){
     const input=document.getElementById('url-'+taskId);
     if(input){input.value=url;input.focus();}
-  };
+  }
 
-  window.submitLink=async function(taskId, dueDate){
+  async function submitLink(taskId, dueDate){
     const urlInput  =document.getElementById('url-'+taskId);
     const labelInput=document.getElementById('label-'+taskId);
     const url  =(urlInput?.value||'').trim();
@@ -574,7 +507,6 @@
 
     try{
       const now=Timestamp.now();
-      // calculate timing at submission time
       let timingNote='';
       if(dueDate){
         const timing=calcTiming(dueDate,now);
@@ -588,7 +520,7 @@
         submittedBy:currentUserEmail,
         submittedAt:now,
         dueDate:dueDate||'',
-        timingNote  // stored in Firestore for admin reports
+        timingNote
       });
       if(urlInput)   urlInput.value='';
       if(labelInput) labelInput.value='';
@@ -598,35 +530,26 @@
     }finally{
       if(btn){btn.disabled=false;btn.innerHTML='<i class="ti ti-plus"></i> Add link';}
     }
-  };
+  }
 
-  window.removeLink=async function(linkId){
+  async function removeLink(linkId){
     if(!confirm('Remove this output link?')) return;
     try{
       await deleteDoc(doc(db,'task_links',linkId));
       showToast('🗑 Link removed','danger');
     }catch(err){showToast('Error: '+err.message,'danger');}
-  };
+  }
 
-  window.markCompleted=async function(taskId){
+  async function markCompleted(taskId){
     await updateDoc(doc(db,'tasks',taskId),{status:'Completed'});
     showToast('✓ Task marked as completed','success');
-  };
-  window.markPending=async function(taskId){
+  }
+  async function markPending(taskId){
     await updateDoc(doc(db,'tasks',taskId),{status:'Pending'});
     showToast('↩ Task moved back to pending','warn');
-  };
-  window.logout=function(){signOut(auth).then(()=>window.location.href='login.html');};
-
-  function showToast(msg,type){
-    const wrap=document.getElementById('toastWrap');
-    const toast=document.createElement('div');
-    toast.className='toast';
-    toast.style.background=type==='success'?'#059669':type==='danger'?'#DC2626':'#D97706';
-    toast.textContent=msg;
-    wrap.appendChild(toast);
-    setTimeout(()=>toast.remove(),3500);
   }
+
+  window.logout=function(){signOut(auth).then(()=>window.location.href='login.html');};
 </script>
 </body>
 </html>
